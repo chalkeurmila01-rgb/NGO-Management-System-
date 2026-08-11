@@ -1,1 +1,143 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard - NGO Management System</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- Navbar -->
+    <nav class="bg-blue-700 text-white p-4">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+
+            <h1 class="text-xl font-bold">
+                NGO Management System
+            </h1>
+
+            <div class="flex items-center gap-4">
+                <span id="userName">Welcome, User</span>
+
+                <button
+                    id="logoutBtn"
+                    class="bg-white text-blue-700 px-4 py-2 rounded-lg font-semibold">
+                    Logout
+                </button>
+            </div>
+
+        </div>
+    </nav>
+
+    <!-- Dashboard -->
+    <main class="max-w-6xl mx-auto px-4 py-10">
+
+        <div class="mb-8">
+            <h2 class="text-3xl font-bold text-blue-700">
+                User Dashboard
+            </h2>
+
+            <p class="text-gray-600 mt-2">
+                Manage your NGO activities and information from here.
+            </p>
+        </div>
+
+        <!-- Dashboard Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+            <!-- Volunteer -->
+            <div class="bg-white p-6 rounded-xl shadow-md">
+                <h3 class="text-xl font-bold mb-2">
+                    Volunteers
+                </h3>
+
+                <p class="text-gray-600 mb-4">
+                    View and manage volunteer information.
+                </p>
+
+                <button
+                    class="bg-blue-700 text-white px-4 py-2 rounded-lg">
+                    View Volunteers
+                </button>
+            </div>
+
+            <!-- Donations -->
+            <div class="bg-white p-6 rounded-xl shadow-md">
+                <h3 class="text-xl font-bold mb-2">
+                    Donations
+                </h3>
+
+                <p class="text-gray-600 mb-4">
+                    Manage donation records and details.
+                </p>
+
+                <button
+                    class="bg-blue-700 text-white px-4 py-2 rounded-lg">
+                    View Donations
+                </button>
+            </div>
+
+            <!-- Beneficiaries -->
+            <div class="bg-white p-6 rounded-xl shadow-md">
+                <h3 class="text-xl font-bold mb-2">
+                    Beneficiaries
+                </h3>
+
+                <p class="text-gray-600 mb-4">
+                    Manage beneficiary information.
+                </p>
+
+                <button
+                    class="bg-blue-700 text-white px-4 py-2 rounded-lg">
+                    View Beneficiaries
+                </button>
+            </div>
+
+            <!-- Activities -->
+            <div class="bg-white p-6 rounded-xl shadow-md">
+                <h3 class="text-xl font-bold mb-2">
+                    NGO Activities
+                </h3>
+
+                <p class="text-gray-600 mb-4">
+                    View and manage NGO activities.
+                </p>
+
+                <button
+                    class="bg-blue-700 text-white px-4 py-2 rounded-lg">
+                    View Activities
+                </button>
+            </div>
+
+        </div>
+
+        <!-- Information Section -->
+        <section class="bg-white mt-8 p-6 rounded-xl shadow-md">
+
+            <h3 class="text-2xl font-bold text-blue-700 mb-3">
+                About Your Dashboard
+            </h3>
+
+            <p class="text-gray-600">
+                This dashboard will provide access to NGO management
+                features. Firebase will be connected later to store
+                and manage real-time information.
+            </p>
+
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white text-center p-4 mt-10">
+        <p>
+            © 2026 NGO Management System
+        </p>
+    </footer>
+
+</body>
+</html>
