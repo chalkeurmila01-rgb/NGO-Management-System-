@@ -1,1 +1,49 @@
+/* =========================================
+   NGO Management System
+   Custom Styles
+   ========================================= */
 
+/* General */
+body {
+    font-family: Arial, sans-serif;
+}
+
+/* Smooth transitions */
+button,
+a,
+input {
+    transition: all 0.2s ease;
+}
+
+/* Buttons */
+button {
+    cursor: pointer;
+}
+
+/* Form inputs */
+input:focus {
+    outline: none;
+}
+
+/* Card hover effect */
+.shadow-md:hover {
+    transform: translateY(-2px);
+}
+
+/* Footer */
+footer {
+    line-height: 1.6;
+}
+
+/* Mobile adjustments */
+@media (max-width: 640px) {
+
+    h1 {
+        font-size: 1.1rem;
+    }
+
+    h2 {
+        font-size: 1.8rem;
+    }
+
+}
