@@ -13,7 +13,8 @@ import {
 
 import {
     ref,
-    set
+    set,
+    get
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-database.js";
 
 import {
@@ -39,18 +40,47 @@ if (loginForm) {
 
         try {
 
-            const userCredential = await signInWithEmailAndPassword(
-                auth,
-                email,
-                password
-            );
+            // Firebase Authentication
+            const userCredential =
+                await signInWithEmailAndPassword(
+                    auth,
+                    email,
+                    password
+                );
+
+            const user = userCredential.user;
 
             console.log("Login successful!");
-            console.log("User:", userCredential.user);
+            console.log("User:", user);
 
-            alert("Login successful!");
+            // Get user's data from Realtime Database
+            const userRef = ref(db, "users/" + user.uid);
+            const snapshot = await get(userRef);
 
-            window.location.href = "dashboard.html";
+            if (snapshot.exists()) {
+
+                const userData = snapshot.val();
+
+                console.log("User data:", userData);
+
+                alert("Login successful!");
+
+                // Check user role
+                if (userData.role === "admin") {
+
+                    window.location.href = "admin.html";
+
+                } else {
+
+                    window.location.href = "dashboard.html";
+                }
+
+            } else {
+
+                alert("User data not found in database.");
+
+                await signOut(auth);
+            }
 
         } catch (error) {
 
@@ -77,7 +107,8 @@ if (registerForm) {
         const name = document.getElementById("name").value;
         const email = document.getElementById("email").value;
         const password = document.getElementById("password").value;
-        const confirmPassword = document.getElementById("confirmPassword").value;
+        const confirmPassword =
+            document.getElementById("confirmPassword").value;
 
 
         // Check passwords
@@ -128,8 +159,9 @@ if (registerForm) {
     });
 }
 
+
 // =========================================
-// LOGOUT
+// USER LOGOUT
 // =========================================
 
 const logoutBtn = document.getElementById("logoutBtn");
@@ -155,6 +187,36 @@ if (logoutBtn) {
     });
 }
 
+
+// =========================================
+// ADMIN LOGOUT
+// =========================================
+
+const adminLogoutBtn =
+    document.getElementById("adminLogoutBtn");
+
+if (adminLogoutBtn) {
+
+    adminLogoutBtn.addEventListener("click", async () => {
+
+        try {
+
+            await signOut(auth);
+
+            alert("Admin logout successful!");
+
+            window.location.href = "login.html";
+
+        } catch (error) {
+
+            console.error("Admin logout error:", error);
+
+            alert("Admin logout failed: " + error.message);
+        }
+    });
+}
+
+
 // =========================================
 // DASHBOARD AUTH PROTECTION
 // =========================================
@@ -164,16 +226,84 @@ const isDashboardPage =
 
 if (isDashboardPage) {
 
-    onAuthStateChanged(auth, (user) => {
+    onAuthStateChanged(auth, async (user) => {
 
         if (!user) {
 
             window.location.href = "login.html";
 
+            return;
+        }
+
+        console.log("Authenticated user:", user.email);
+
+        // Check role
+        const userRef = ref(db, "users/" + user.uid);
+        const snapshot = await get(userRef);
+
+        if (snapshot.exists()) {
+
+            const userData = snapshot.val();
+
+            // Admin should not stay on user dashboard
+            if (userData.role === "admin") {
+
+                window.location.href = "admin.html";
+            }
+
         } else {
 
-            console.log("Authenticated user:", user.email);
+            await signOut(auth);
 
+            window.location.href = "login.html";
         }
-    }); 
+    });
 }
+
+
+// =========================================
+// ADMIN PAGE PROTECTION
+// =========================================
+
+const isAdminPage =
+    window.location.pathname.endsWith("admin.html");
+
+if (isAdminPage) {
+
+    onAuthStateChanged(auth, async (user) => {
+
+        if (!user) {
+
+            window.location.href = "login.html";
+
+            return;
+        }
+
+        console.log("Checking admin access...");
+
+        // Get user's database record
+        const userRef = ref(db, "users/" + user.uid);
+        const snapshot = await get(userRef);
+
+        if (snapshot.exists()) {
+
+            const userData = snapshot.val();
+
+            console.log("User role:", userData.role);
+
+            // Allow only admin
+            if (userData.role !== "admin") {
+
+                alert("Access denied. Admin only.");
+
+                window.location.href = "dashboard.html";
+            }
+
+        } else {
+
+            await signOut(auth);
+
+            window.location.href = "login.html";
+        }
+    });
+                }
