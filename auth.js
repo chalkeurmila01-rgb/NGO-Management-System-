@@ -348,3 +348,53 @@ if (totalUsersElement) {
             totalUsersElement.textContent = "0";
         });
 }
+
+// =========================================
+// ADMIN - TOTAL VOLUNTEERS
+// =========================================
+
+const totalVolunteersElement =
+    document.getElementById("totalVolunteers");
+
+if (totalVolunteersElement) {
+
+    const volunteersRef =
+        ref(db, "volunteers");
+
+    get(volunteersRef)
+        .then((snapshot) => {
+
+            if (snapshot.exists()) {
+
+                const volunteers =
+                    snapshot.val();
+
+                const totalVolunteers =
+                    Object.keys(volunteers).length;
+
+                totalVolunteersElement.textContent =
+                    totalVolunteers;
+
+                console.log(
+                    "Total volunteers:",
+                    totalVolunteers
+                );
+
+            } else {
+
+                totalVolunteersElement.textContent =
+                    "0";
+            }
+
+        })
+        .catch((error) => {
+
+            console.error(
+                "Error loading volunteers:",
+                error
+            );
+
+            totalVolunteersElement.textContent =
+                "0";
+        });
+}
