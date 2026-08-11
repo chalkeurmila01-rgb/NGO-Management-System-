@@ -307,3 +307,44 @@ if (isAdminPage) {
         }
     });
                 }
+
+// =========================================
+// ADMIN - TOTAL USERS
+// =========================================
+
+const totalUsersElement =
+    document.getElementById("totalUsers");
+
+if (totalUsersElement) {
+
+    const usersRef = ref(db, "users");
+
+    get(usersRef)
+        .then((snapshot) => {
+
+            if (snapshot.exists()) {
+
+                const users = snapshot.val();
+
+                const totalUsers =
+                    Object.keys(users).length;
+
+                totalUsersElement.textContent =
+                    totalUsers;
+
+            } else {
+
+                totalUsersElement.textContent = "0";
+            }
+
+        })
+        .catch((error) => {
+
+            console.error(
+                "Error loading users:",
+                error
+            );
+
+            totalUsersElement.textContent = "0";
+        });
+}
