@@ -154,3 +154,26 @@ if (logoutBtn) {
         }
     });
 }
+
+// =========================================
+// DASHBOARD AUTH PROTECTION
+// =========================================
+
+const isDashboardPage =
+    window.location.pathname.endsWith("dashboard.html");
+
+if (isDashboardPage) {
+
+    onAuthStateChanged(auth, (user) => {
+
+        if (!user) {
+
+            window.location.href = "login.html";
+
+        } else {
+
+            console.log("Authenticated user:", user.email);
+
+        }
+    }); 
+}
