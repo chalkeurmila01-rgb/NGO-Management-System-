@@ -125,4 +125,31 @@ if (registerForm) {
             alert("Registration failed: " + error.message);
         }
     });
-                  }
+}
+
+// =========================================
+// LOGOUT
+// =========================================
+
+const logoutBtn = document.getElementById("logoutBtn");
+
+if (logoutBtn) {
+
+    logoutBtn.addEventListener("click", async () => {
+
+        try {
+
+            await signOut(auth);
+
+            alert("Logout successful!");
+
+            window.location.href = "login.html";
+
+        } catch (error) {
+
+            console.error("Logout error:", error);
+
+            alert("Logout failed: " + error.message);
+        }
+    });
+}
