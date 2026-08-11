@@ -1,1 +1,270 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Panel - NGO Management System</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- Navbar -->
+    <nav class="bg-blue-700 text-white p-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+
+            <h1 class="text-xl font-bold">
+                NGO Management System
+            </h1>
+
+            <div class="flex items-center gap-4">
+
+                <span>
+                    Admin Panel
+                </span>
+
+                <button
+                    id="adminLogoutBtn"
+                    class="bg-white text-blue-700 px-4 py-2 rounded-lg font-semibold">
+                    Logout
+                </button>
+
+            </div>
+        </div>
+    </nav>
+
+    <!-- Admin Main Content -->
+    <main class="max-w-7xl mx-auto px-4 py-10">
+
+        <div class="mb-8">
+
+            <h2 class="text-3xl font-bold text-blue-700">
+                Admin Dashboard
+            </h2>
+
+            <p class="text-gray-600 mt-2">
+                Manage NGO users, volunteers, donations,
+                beneficiaries and activities.
+            </p>
+
+        </div>
+
+        <!-- Statistics -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+
+            <!-- Users -->
+            <div class="bg-white p-6 rounded-xl shadow-md">
+                <p class="text-gray-500">
+                    Total Users
+                </p>
+
+                <h3
+                    id="totalUsers"
+                    class="text-3xl font-bold text-blue-700 mt-2">
+                    0
+                </h3>
+            </div>
+
+            <!-- Volunteers -->
+            <div class="bg-white p-6 rounded-xl shadow-md">
+                <p class="text-gray-500">
+                    Volunteers
+                </p>
+
+                <h3
+                    id="totalVolunteers"
+                    class="text-3xl font-bold text-green-600 mt-2">
+                    0
+                </h3>
+            </div>
+
+            <!-- Donations -->
+            <div class="bg-white p-6 rounded-xl shadow-md">
+                <p class="text-gray-500">
+                    Donations
+                </p>
+
+                <h3
+                    id="totalDonations"
+                    class="text-3xl font-bold text-yellow-600 mt-2">
+                    0
+                </h3>
+            </div>
+
+            <!-- Beneficiaries -->
+            <div class="bg-white p-6 rounded-xl shadow-md">
+                <p class="text-gray-500">
+                    Beneficiaries
+                </p>
+
+                <h3
+                    id="totalBeneficiaries"
+                    class="text-3xl font-bold text-red-600 mt-2">
+                    0
+                </h3>
+            </div>
+
+        </div>
+
+        <!-- Management Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+            <!-- User Management -->
+            <div class="bg-white p-6 rounded-xl shadow-md">
+
+                <h3 class="text-xl font-bold mb-2">
+                    User Management
+                </h3>
+
+                <p class="text-gray-600 mb-4">
+                    View and manage registered NGO users.
+                </p>
+
+                <button
+                    class="bg-blue-700 text-white px-4 py-2 rounded-lg">
+                    Manage Users
+                </button>
+
+            </div>
+
+            <!-- Volunteer Management -->
+            <div class="bg-white p-6 rounded-xl shadow-md">
+
+                <h3 class="text-xl font-bold mb-2">
+                    Volunteer Management
+                </h3>
+
+                <p class="text-gray-600 mb-4">
+                    Add, update, search and delete volunteer records.
+                </p>
+
+                <button
+                    class="bg-blue-700 text-white px-4 py-2 rounded-lg">
+                    Manage Volunteers
+                </button>
+
+            </div>
+
+            <!-- Donation Management -->
+            <div class="bg-white p-6 rounded-xl shadow-md">
+
+                <h3 class="text-xl font-bold mb-2">
+                    Donation Management
+                </h3>
+
+                <p class="text-gray-600 mb-4">
+                    Manage NGO donation records.
+                </p>
+
+                <button
+                    class="bg-blue-700 text-white px-4 py-2 rounded-lg">
+                    Manage Donations
+                </button>
+
+            </div>
+
+            <!-- Beneficiary Management -->
+            <div class="bg-white p-6 rounded-xl shadow-md">
+
+                <h3 class="text-xl font-bold mb-2">
+                    Beneficiary Management
+                </h3>
+
+                <p class="text-gray-600 mb-4">
+                    Manage beneficiary information and records.
+                </p>
+
+                <button
+                    class="bg-blue-700 text-white px-4 py-2 rounded-lg">
+                    Manage Beneficiaries
+                </button>
+
+            </div>
+
+            <!-- NGO Activities -->
+            <div class="bg-white p-6 rounded-xl shadow-md">
+
+                <h3 class="text-xl font-bold mb-2">
+                    NGO Activities
+                </h3>
+
+                <p class="text-gray-600 mb-4">
+                    Manage NGO events, campaigns and activities.
+                </p>
+
+                <button
+                    class="bg-blue-700 text-white px-4 py-2 rounded-lg">
+                    Manage Activities
+                </button>
+
+            </div>
+
+            <!-- Reports -->
+            <div class="bg-white p-6 rounded-xl shadow-md">
+
+                <h3 class="text-xl font-bold mb-2">
+                    Reports
+                </h3>
+
+                <p class="text-gray-600 mb-4">
+                    View NGO management reports and statistics.
+                </p>
+
+                <button
+                    class="bg-blue-700 text-white px-4 py-2 rounded-lg">
+                    View Reports
+                </button>
+
+            </div>
+
+        </div>
+
+        <!-- Search Section -->
+        <section class="bg-white p-6 rounded-xl shadow-md mt-10">
+
+            <h3 class="text-2xl font-bold text-blue-700 mb-4">
+                Search Records
+            </h3>
+
+            <div class="flex flex-col md:flex-row gap-4">
+
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Search users, volunteers, donations..."
+                    class="flex-1 border border-gray-300 rounded-lg p-3">
+
+                <button
+                    id="searchBtn"
+                    class="bg-blue-700 text-white px-6 py-3 rounded-lg">
+                    Search
+                </button>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white text-center p-5 mt-10">
+
+        <p>
+            NGO Management System
+        </p>
+
+        <p class="text-gray-400 text-sm mt-1">
+            Admin Panel
+        </p>
+
+        <p class="text-gray-400 text-sm mt-2">
+            © 2026 NGO Management System. All Rights Reserved.
+        </p>
+
+    </footer>
+
+</body>
+</html>
