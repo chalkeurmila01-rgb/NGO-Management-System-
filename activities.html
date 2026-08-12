@@ -909,11 +909,14 @@ document.addEventListener("click", async function(event) {
     }
 
 });
-        // =========================================
-        // INITIAL LOAD
-        // =========================================
+    
+// =========================================
+// INITIAL LOAD
+// =========================================
 
-        loadActivities();
+window.addEventListener("load", function() {
+    loadActivities("");
+});
 
 
     </script>
