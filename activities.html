@@ -21,7 +21,6 @@
             NGO Management System
         </h1>
 
-
         <a
             href="admin.html"
             class="bg-white text-blue-700 px-4 py-2 rounded-lg font-semibold">
@@ -57,7 +56,7 @@
 
 
 
-    <!-- Add Activity -->
+    <!-- ADD ACTIVITY -->
 
     <section
         class="bg-white p-6 rounded-xl shadow-md">
@@ -81,7 +80,6 @@
                     Activity Name
                 </label>
 
-
                 <input
                     type="text"
                     id="activityName"
@@ -100,7 +98,6 @@
                 <label class="block font-medium mb-1">
                     Activity Type
                 </label>
-
 
                 <select
                     id="activityType"
@@ -149,7 +146,6 @@
                     Activity Date
                 </label>
 
-
                 <input
                     type="date"
                     id="activityDate"
@@ -167,7 +163,6 @@
                 <label class="block font-medium mb-1">
                     Location
                 </label>
-
 
                 <input
                     type="text"
@@ -188,7 +183,6 @@
                     Description
                 </label>
 
-
                 <textarea
                     id="activityDescription"
                     placeholder="Enter activity description"
@@ -199,8 +193,6 @@
             </div>
 
 
-
-            <!-- Add Button -->
 
             <button
                 type="submit"
@@ -217,7 +209,7 @@
 
 
 
-    <!-- Activity Records -->
+    <!-- ACTIVITY RECORDS -->
 
     <section
         class="bg-white p-6 rounded-xl shadow-md mt-8">
@@ -236,7 +228,6 @@
 
         <div
             class="flex flex-col md:flex-row gap-3 mb-6">
-
 
             <input
                 type="text"
@@ -272,6 +263,170 @@
     </section>
 
 
+
+    <!-- EDIT ACTIVITY -->
+
+    <section
+        id="editActivitySection"
+        class="bg-white p-6 rounded-xl shadow-md mt-8 hidden">
+
+
+        <h3
+            class="text-2xl font-bold text-yellow-600 mb-6">
+
+            Edit Activity
+
+        </h3>
+
+
+        <form id="editActivityForm">
+
+
+            <!-- Edit Name -->
+
+            <div class="mb-4">
+
+                <label class="block font-medium mb-1">
+                    Activity Name
+                </label>
+
+                <input
+                    type="text"
+                    id="editActivityName"
+                    required
+                    class="w-full border border-gray-300 rounded-lg p-3">
+
+            </div>
+
+
+
+            <!-- Edit Type -->
+
+            <div class="mb-4">
+
+                <label class="block font-medium mb-1">
+                    Activity Type
+                </label>
+
+                <select
+                    id="editActivityType"
+                    required
+                    class="w-full border border-gray-300 rounded-lg p-3">
+
+                    <option value="Campaign">
+                        Campaign
+                    </option>
+
+                    <option value="Event">
+                        Event
+                    </option>
+
+                    <option value="Awareness Program">
+                        Awareness Program
+                    </option>
+
+                    <option value="Social Service">
+                        Social Service
+                    </option>
+
+                    <option value="Fundraising">
+                        Fundraising
+                    </option>
+
+                    <option value="Other">
+                        Other
+                    </option>
+
+                </select>
+
+            </div>
+
+
+
+            <!-- Edit Date -->
+
+            <div class="mb-4">
+
+                <label class="block font-medium mb-1">
+                    Activity Date
+                </label>
+
+                <input
+                    type="date"
+                    id="editActivityDate"
+                    required
+                    class="w-full border border-gray-300 rounded-lg p-3">
+
+            </div>
+
+
+
+            <!-- Edit Location -->
+
+            <div class="mb-4">
+
+                <label class="block font-medium mb-1">
+                    Location
+                </label>
+
+                <input
+                    type="text"
+                    id="editActivityLocation"
+                    required
+                    class="w-full border border-gray-300 rounded-lg p-3">
+
+            </div>
+
+
+
+            <!-- Edit Description -->
+
+            <div class="mb-6">
+
+                <label class="block font-medium mb-1">
+                    Description
+                </label>
+
+                <textarea
+                    id="editActivityDescription"
+                    rows="4"
+                    required
+                    class="w-full border border-gray-300 rounded-lg p-3"></textarea>
+
+            </div>
+
+
+
+            <!-- Buttons -->
+
+            <div class="flex gap-3">
+
+                <button
+                    type="submit"
+                    class="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold">
+
+                    Update Activity
+
+                </button>
+
+
+                <button
+                    type="button"
+                    id="cancelEditBtn"
+                    class="bg-gray-500 text-white px-6 py-3 rounded-lg font-semibold">
+
+                    Cancel
+
+                </button>
+
+            </div>
+
+
+        </form>
+
+    </section>
+
+
 </main>
 
 
@@ -281,21 +436,17 @@
 <footer
     class="bg-gray-800 text-white text-center p-5 mt-10">
 
-
     <p>
         NGO Management System
     </p>
-
 
     <p class="text-gray-400 text-sm mt-1">
         NGO Activities Management
     </p>
 
-
     <p class="text-gray-400 text-sm mt-2">
         © 2026 NGO Management System
     </p>
-
 
 </footer>
 
@@ -334,6 +485,10 @@
 
 
 
+    // =========================================
+    // ELEMENTS
+    // =========================================
+
     const activityForm =
         document.getElementById(
             "activityForm"
@@ -356,6 +511,27 @@
         document.getElementById(
             "activitySearchBtn"
         );
+
+
+    const editActivitySection =
+        document.getElementById(
+            "editActivitySection"
+        );
+
+
+    const editActivityForm =
+        document.getElementById(
+            "editActivityForm"
+        );
+
+
+    const cancelEditBtn =
+        document.getElementById(
+            "cancelEditBtn"
+        );
+
+
+    let currentActivityId = null;
 
 
 
@@ -445,7 +621,6 @@
 
                 loadActivities();
 
-
             }
 
 
@@ -488,8 +663,7 @@
                 );
 
 
-            activityList.innerHTML =
-                "";
+            activityList.innerHTML = "";
 
 
             if (!snapshot.exists()) {
@@ -656,7 +830,6 @@
 
         }
 
-
         catch (error) {
 
             console.error(
@@ -699,7 +872,7 @@
 
 
     // =========================================
-    // SEARCH WITH ENTER KEY
+    // SEARCH WITH ENTER
     // =========================================
 
     activitySearch.addEventListener(
@@ -729,7 +902,7 @@
 
 
     // =========================================
-    // EDIT ACTIVITY
+    // OPEN EDIT FORM
     // =========================================
 
     document.addEventListener(
@@ -748,10 +921,8 @@
             }
 
 
-
-            const activityId =
+            currentActivityId =
                 event.target.dataset.id;
-
 
 
             try {
@@ -760,7 +931,7 @@
                     ref(
                         db,
                         "activities/" +
-                        activityId
+                        currentActivityId
                     );
 
 
@@ -786,152 +957,33 @@
 
 
 
-                const newName =
-                    prompt(
-                        "Enter activity name:",
-                        activity.activityName
-                    );
+                // Fill edit form
+
+                document.getElementById(
+                    "editActivityName"
+                ).value =
+                    activity.activityName || "";
 
 
-                if (
-                    newName === null
-                ) {
-
-                    return;
-
-                }
+                document.getElementById(
+                    "editActivityType"
+                ).value =
+                    activity.activityType || "Other";
 
 
-
-                const newType =
-                    prompt(
-                        "Enter activity type:",
-                        activity.activityType
-                    );
+                document.getElementById(
+                    "editActivityDate"
+                ).value =
+                    activity.activityDate || "";
 
 
-                if (
-                    newType === null
-                ) {
-
-                    return;
-
-                }
+                document.getElementById(
+                    "editActivityLocation"
+                ).value =
+                    activity.location || "";
 
 
-
-                const newDate =
-                    prompt(
-                        "Enter activity date:",
-                        activity.activityDate
-                    );
-
-
-                if (
-                    newDate === null
-                ) {
-
-                    return;
-
-                }
-
-
-
-                const newLocation =
-                    prompt(
-                        "Enter activity location:",
-                        activity.location
-                    );
-
-
-                if (
-                    newLocation === null
-                ) {
-
-                    return;
-
-                }
-
-
-
-                const newDescription =
-                    prompt(
-                        "Enter activity description:",
-                        activity.description
-                    );
-
-
-                if (
-                    newDescription === null
-                ) {
-
-                    return;
-
-                }
-
-
-
-                await set(
-                    activityRef,
-                    {
-
-                        activityName:
-                            newName.trim(),
-
-                        activityType:
-                            newType.trim(),
-
-                        activityDate:
-                            newDate.trim(),
-
-                        location:
-                            newLocation.trim(),
-
-                        description:
-                            newDescription.trim()
-
-                    }
-                );
-
-
-                alert(
-                    "Activity updated successfully!"
-                );
-
-
-                loadActivities();
-
-
-            }
-
-
-            catch (error) {
-
-                console.error(
-                    "Update activity error:",
-                    error
-                );
-
-
-                alert(
-                    "Failed to update activity: " +
-                    error.message
-                );
-
-            }
-
-        }
-    );
-
-
-
-    // =========================================
-    // INITIAL LOAD
-    // =========================================
-
-    loadActivities();
-
-
-</script>
-
-</body></html>
+                document.getElementById(
+                    "editActivityDescription"
+                ).value =
+                    activity.descripti
