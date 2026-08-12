@@ -405,6 +405,185 @@ async function loadStatistics() {
 
 }
 
+// =========================================
+// ADMIN DASHBOARD SEARCH
+// =========================================
+
+const searchInput =
+    document.getElementById("searchInput");
+
+const searchBtn =
+    document.getElementById("searchBtn");
+
+
+searchBtn.addEventListener("click", async function() {
+
+    const searchText =
+        searchInput.value.trim().toLowerCase();
+
+    if (!searchText) {
+
+        alert("Please enter something to search.");
+
+        return;
+    }
+
+    try {
+
+        const paths = [
+            "volunteers",
+            "donations",
+            "beneficiaries",
+            "activities"
+        ];
+
+        let results = [];
+
+        for (const path of paths) {
+
+            const snapshot =
+                await get(ref(db, path));
+
+            if (!snapshot.exists()) {
+                continue;
+            }
+
+            const records =
+                snapshot.val();
+
+            Object.keys(records).forEach(function(id) {
+
+                const record =
+                    records[id];
+
+                const recordText =
+                    JSON.stringify(record).toLowerCase();
+
+                if (recordText.includes(searchText)) {
+
+                    results.push({
+                        type: path,
+                        id: id,
+                        data: record
+                    });
+
+                }
+
+            });
+
+        }
+
+
+        // Remove previous results
+
+        const oldResults =
+            document.getElementById("adminSearchResults");
+
+        if (oldResults) {
+            oldResults.remove();
+        }
+
+
+        // Create results section
+
+        const resultsSection =
+            document.createElement("section");
+
+        resultsSection.id =
+            "adminSearchResults";
+
+        resultsSection.className =
+            "bg-white p-6 rounded-xl shadow-md mt-6";
+
+
+        if (results.length === 0) {
+
+            resultsSection.innerHTML = `
+                <h3 class="text-xl font-bold text-blue-700 mb-3">
+                    Search Results
+                </h3>
+
+                <p class="text-red-600">
+                    No matching records found.
+                </p>
+            `;
+
+        } else {
+
+            resultsSection.innerHTML = `
+                <h3 class="text-xl font-bold text-blue-700 mb-4">
+                    Search Results (${results.length})
+                </h3>
+            `;
+
+
+            results.forEach(function(result) {
+
+                const div =
+                    document.createElement("div");
+
+                div.className =
+                    "border border-gray-300 rounded-lg p-4 mb-3";
+
+
+                div.innerHTML = `
+
+                    <p class="font-bold text-blue-700">
+                        ${result.type.toUpperCase()}
+                    </p>
+
+                    <p class="text-sm text-gray-500 mb-2">
+                        ID: ${result.id}
+                    </p>
+
+                    <p>
+                        ${JSON.stringify(result.data)}
+                    </p>
+
+                `;
+
+
+                resultsSection.appendChild(div);
+
+            });
+
+        }
+
+
+        document.querySelector("main")
+            .appendChild(resultsSection);
+
+
+    } catch (error) {
+
+        console.error(
+            "Admin search error:",
+            error
+        );
+
+        alert(
+            "Search failed: " +
+            error.message
+        );
+
+    }
+
+});
+
+
+// Search using Enter key
+
+searchInput.addEventListener("keydown", function(event) {
+
+    if (event.key === "Enter") {
+
+        event.preventDefault();
+
+        searchBtn.click();
+
+    }
+
+});
 
 // =========================================
 // INITIAL LOAD
