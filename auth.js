@@ -3,6 +3,8 @@
 // Authentication
 // =========================================
 
+console.log("AUTH.JS IS RUNNING");
+
 import {
     signInWithEmailAndPassword,
     createUserWithEmailAndPassword,
