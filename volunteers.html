@@ -1,186 +1,836 @@
-
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
+<!DOCTYPE html><html lang="en"><head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Volunteer Management - NGO Management System</title>
 
-    <title>Volunteer Management - NGO Management System</title>
+<script src="https://cdn.tailwindcss.com"></script>
 
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
+</head><body class="bg-gray-50 text-gray-800"><!-- Navbar -->
+<nav class="bg-blue-700 text-white p-4">
 
-<body class="bg-gray-50 text-gray-800">
+    <div class="max-w-6xl mx-auto flex justify-between items-center">
 
-    <!-- Navbar -->
-    <nav class="bg-blue-700 text-white p-4">
+        <h1 class="text-xl font-bold">
+            NGO Management System
+        </h1>
 
-        <div class="max-w-6xl mx-auto flex justify-between items-center">
+        <a
+            href="admin.html"
+            class="bg-white text-blue-700 px-4 py-2 rounded-lg font-semibold">
+            Back to Admin
+        </a>
 
-            <h1 class="text-xl font-bold">
-                NGO Management System
-            </h1>
+    </div>
 
-            <a
-                href="admin.html"
-                class="bg-white text-blue-700 px-4 py-2 rounded-lg font-semibold">
-                Back to Admin
-            </a>
-
-        </div>
-
-    </nav>
+</nav>
 
 
-    <!-- Main Content -->
-    <main class="max-w-6xl mx-auto px-4 py-10">
+<!-- Main Content -->
+<main class="max-w-6xl mx-auto px-4 py-10">
 
-        <div class="mb-8">
+    <!-- Page Heading -->
+    <div class="mb-8">
 
-            <h2 class="text-3xl font-bold text-blue-700">
-                Volunteer Management
-            </h2>
+        <h2 class="text-3xl font-bold text-blue-700">
+            Volunteer Management
+        </h2>
 
-            <p class="text-gray-600 mt-2">
-                Add and manage NGO volunteers.
-            </p>
+        <p class="text-gray-600 mt-2">
+            Add, update, search and delete NGO volunteers.
+        </p>
 
-        </div>
-
-
-        <!-- Add Volunteer Form -->
-        <section class="bg-white p-6 rounded-xl shadow-md">
-
-            <h3 class="text-2xl font-bold text-blue-700 mb-6">
-                Add Volunteer
-            </h3>
+    </div>
 
 
-            <form id="volunteerForm">
+    <!-- Add / Edit Volunteer Form -->
+    <section class="bg-white p-6 rounded-xl shadow-md">
 
-                <!-- Name -->
-                <div class="mb-4">
-
-                    <label class="block font-medium mb-1">
-                        Volunteer Name
-                    </label>
-
-                    <input
-                        type="text"
-                        id="volunteerName"
-                        placeholder="Enter volunteer name"
-                        required
-                        class="w-full border border-gray-300 rounded-lg p-3">
-
-                </div>
+        <h3
+            id="formTitle"
+            class="text-2xl font-bold text-blue-700 mb-6">
+            Add Volunteer
+        </h3>
 
 
-                <!-- Email -->
-                <div class="mb-4">
+        <form id="volunteerForm">
 
-                    <label class="block font-medium mb-1">
-                        Email
-                    </label>
+            <!-- Volunteer Name -->
+            <div class="mb-4">
 
-                    <input
-                        type="email"
-                        id="volunteerEmail"
-                        placeholder="Enter volunteer email"
-                        required
-                        class="w-full border border-gray-300 rounded-lg p-3">
+                <label class="block font-medium mb-1">
+                    Volunteer Name
+                </label>
 
-                </div>
+                <input
+                    type="text"
+                    id="volunteerName"
+                    placeholder="Enter volunteer name"
+                    required
+                    class="w-full border border-gray-300 rounded-lg p-3">
 
-
-                <!-- Phone -->
-                <div class="mb-4">
-
-                    <label class="block font-medium mb-1">
-                        Phone Number
-                    </label>
-
-                    <input
-                        type="tel"
-                        id="volunteerPhone"
-                        placeholder="Enter phone number"
-                        required
-                        class="w-full border border-gray-300 rounded-lg p-3">
-
-                </div>
+            </div>
 
 
-                <!-- Address -->
-                <div class="mb-6">
+            <!-- Email -->
+            <div class="mb-4">
 
-                    <label class="block font-medium mb-1">
-                        Address
-                    </label>
+                <label class="block font-medium mb-1">
+                    Email
+                </label>
 
-                    <textarea
-                        id="volunteerAddress"
-                        placeholder="Enter volunteer address"
-                        required
-                        class="w-full border border-gray-300 rounded-lg p-3">
-                    </textarea>
+                <input
+                    type="email"
+                    id="volunteerEmail"
+                    placeholder="Enter volunteer email"
+                    required
+                    class="w-full border border-gray-300 rounded-lg p-3">
 
-                </div>
+            </div>
 
 
-                <!-- Button -->
+            <!-- Phone -->
+            <div class="mb-4">
+
+                <label class="block font-medium mb-1">
+                    Phone Number
+                </label>
+
+                <input
+                    type="tel"
+                    id="volunteerPhone"
+                    placeholder="Enter phone number"
+                    required
+                    class="w-full border border-gray-300 rounded-lg p-3">
+
+            </div>
+
+
+            <!-- Address -->
+            <div class="mb-6">
+
+                <label class="block font-medium mb-1">
+                    Address
+                </label>
+
+                <textarea
+                    id="volunteerAddress"
+                    placeholder="Enter volunteer address"
+                    required
+                    class="w-full border border-gray-300 rounded-lg p-3"></textarea>
+
+            </div>
+
+
+            <!-- Buttons -->
+            <div class="flex gap-3">
+
                 <button
                     type="submit"
+                    id="submitVolunteerBtn"
                     class="bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-800">
 
                     Add Volunteer
 
                 </button>
 
-            </form>
 
-        </section>
+                <button
+                    type="button"
+                    id="cancelEditBtn"
+                    class="hidden bg-gray-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-600">
 
+                    Cancel Edit
 
-        <!-- Volunteer List -->
-        <section class="bg-white p-6 rounded-xl shadow-md mt-8">
-
-            <h3 class="text-2xl font-bold text-blue-700 mb-6">
-                Volunteer Records
-            </h3>
-
-            <div id="volunteerList">
-
-                <p class="text-gray-500">
-                    No volunteers loaded yet.
-                </p>
+                </button>
 
             </div>
 
-        </section>
+        </form>
 
-    </main>
-
-
-    <!-- Footer -->
-    <footer class="bg-gray-800 text-white text-center p-5 mt-10">
-
-        <p>
-            NGO Management System
-        </p>
-
-        <p class="text-gray-400 text-sm mt-1">
-            Volunteer Management
-        </p>
-
-        <p class="text-gray-400 text-sm mt-2">
-            © 2026 NGO Management System
-        </p>
-
-    </footer>
+    </section>
 
 
-    <!-- Authentication -->
-    <script type="module" src="auth.js"></script>
+    <!-- Volunteer Records -->
+    <section class="bg-white p-6 rounded-xl shadow-md mt-8">
+
+        <h3 class="text-2xl font-bold text-blue-700 mb-6">
+            Volunteer Records
+        </h3>
+
+
+        <!-- Search -->
+        <div class="mb-6">
+
+            <input
+                type="text"
+                id="volunteerSearch"
+                placeholder="Search volunteer by name, email or phone..."
+                class="w-full border border-gray-300 rounded-lg p-3">
+
+        </div>
+
+
+        <!-- Records -->
+        <div id="volunteerList">
+
+            <p class="text-gray-500">
+                Loading volunteers...
+            </p>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<!-- Footer -->
+<footer class="bg-gray-800 text-white text-center p-5 mt-10">
+
+    <p>
+        NGO Management System
+    </p>
+
+    <p class="text-gray-400 text-sm mt-1">
+        Volunteer Management
+    </p>
+
+    <p class="text-gray-400 text-sm mt-2">
+        © 2026 NGO Management System
+    </p>
+
+</footer>
+
+
+<!-- Authentication -->
+<script type="module" src="auth.js"></script>
+
+
+<!-- Volunteer Management JavaScript -->
+<script type="module">
+
+    import {
+        ref,
+        push,
+        set,
+        get,
+        remove
+    } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-database.js";
+
+    import {
+        db
+    } from "./firebase.js";
+
+
+    // =========================================
+    // ELEMENTS
+    // =========================================
+
+    const volunteerForm =
+        document.getElementById("volunteerForm");
+
+    const volunteerName =
+        document.getElementById("volunteerName");
+
+    const volunteerEmail =
+        document.getElementById("volunteerEmail");
+
+    const volunteerPhone =
+        document.getElementById("volunteerPhone");
+
+    const volunteerAddress =
+        document.getElementById("volunteerAddress");
+
+    const volunteerList =
+        document.getElementById("volunteerList");
+
+    const formTitle =
+        document.getElementById("formTitle");
+
+    const submitVolunteerBtn =
+        document.getElementById("submitVolunteerBtn");
+
+    const cancelEditBtn =
+        document.getElementById("cancelEditBtn");
+
+    const volunteerSearch =
+        document.getElementById("volunteerSearch");
+
+
+    // =========================================
+    // VARIABLES
+    // =========================================
+
+    let editingVolunteerId = null;
+
+    let allVolunteers = {};
+
+
+    // =========================================
+    // LOAD VOLUNTEERS
+    // =========================================
+
+    async function loadVolunteers() {
+
+        try {
+
+            const volunteersRef =
+                ref(db, "volunteers");
+
+            const snapshot =
+                await get(volunteersRef);
+
+
+            if (snapshot.exists()) {
+
+                allVolunteers =
+                    snapshot.val();
+
+                displayVolunteers(allVolunteers);
+
+            } else {
+
+                allVolunteers = {};
+
+                volunteerList.innerHTML = `
+                    <p class="text-gray-500">
+                        No volunteers found.
+                    </p>
+                `;
+            }
+
+        } catch (error) {
+
+            console.error(
+                "Error loading volunteers:",
+                error
+            );
+
+            volunteerList.innerHTML = `
+                <p class="text-red-600">
+                    Error loading volunteers.
+                </p>
+            `;
+        }
+    }
+
+
+    // =========================================
+    // DISPLAY VOLUNTEERS
+    // =========================================
+
+    function displayVolunteers(volunteers) {
+
+        volunteerList.innerHTML = "";
+
+
+        const volunteerIds =
+            Object.keys(volunteers);
+
+
+        if (volunteerIds.length === 0) {
+
+            volunteerList.innerHTML = `
+                <p class="text-gray-500">
+                    No volunteers found.
+                </p>
+            `;
+
+            return;
+        }
+
+
+        volunteerIds.forEach((id) => {
+
+            const volunteer =
+                volunteers[id];
+
+
+            const card =
+                document.createElement("div");
+
+            card.className =
+                "border border-gray-200 rounded-xl p-5 mb-4";
+
+
+            card.innerHTML = `
+
+                <div class="flex flex-col md:flex-row md:justify-between gap-4">
+
+                    <div>
+
+                        <h4 class="text-xl font-bold text-blue-700">
+                            ${volunteer.name || ""}
+                        </h4>
+
+                        <p class="text-gray-600 mt-2">
+                            <strong>Email:</strong>
+                            ${volunteer.email || ""}
+                        </p>
+
+                        <p class="text-gray-600">
+                            <strong>Phone:</strong>
+                            ${volunteer.phone || ""}
+                        </p>
+
+                        <p class="text-gray-600">
+                            <strong>Address:</strong>
+                            ${volunteer.address || ""}
+                        </p>
+
+                    </div>
+
+
+                    <div class="flex gap-2 items-start">
+
+                        <button
+                            data-id="${id}"
+                            class="editBtn bg-yellow-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-yellow-600">
+
+                            Edit
+
+                        </button>
+
+
+                        <button
+                            data-id="${id}"
+                            class="deleteBtn bg-red-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-700">
+
+                            Delete
+
+                        </button>
+
+                    </div>
+
+                </div>
+            `;
+
+
+            volunteerList.appendChild(card);
+
+        });
+
+
+        // Edit buttons
+        document
+            .querySelectorAll(".editBtn")
+            .forEach((button) => {
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        editVolunteer(
+                            button.dataset.id
+                        );
+
+                    }
+                );
+
+            });
+
+
+        // Delete buttons
+        document
+            .querySelectorAll(".deleteBtn")
+            .forEach((button) => {
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        deleteVolunteer(
+                            button.dataset.id
+                        );
+
+                    }
+                );
+
+            });
+
+    }
+
+
+    // =========================================
+    // ADD / UPDATE VOLUNTEER
+    // =========================================
+
+    volunteerForm.addEventListener(
+        "submit",
+        async (event) => {
+
+            event.preventDefault();
+
+
+            const name =
+                volunteerName.value.trim();
+
+            const email =
+                volunteerEmail.value.trim();
+
+            const phone =
+                volunteerPhone.value.trim();
+
+            const address =
+                volunteerAddress.value.trim();
+
+
+            if (!name || !email || !phone || !address) {
+
+                alert(
+                    "Please fill all volunteer details."
+                );
+
+                return;
+            }
+
+
+            try {
+
+                // UPDATE
+                if (editingVolunteerId) {
+
+                    const volunteerRef =
+                        ref(
+                            db,
+                            "volunteers/" +
+                            editingVolunteerId
+                        );
+
+
+                    await set(
+                        volunteerRef,
+                        {
+                            name: name,
+                            email: email,
+                            phone: phone,
+                            address: address
+                        }
+                    );
+
+
+                    alert(
+                        "Volunteer updated successfully!"
+                    );
+
+                }
+
+                // ADD
+                else {
+
+                    const volunteersRef =
+                        ref(db, "volunteers");
+
+
+                    const newVolunteerRef =
+                        push(volunteersRef);
+
+
+                    await set(
+                        newVolunteerRef,
+                        {
+                            name: name,
+                            email: email,
+                            phone: phone,
+                            address: address
+                        }
+                    );
+
+
+                    alert(
+                        "Volunteer added successfully!"
+                    );
+
+                }
+
+
+                resetForm();
+
+                await loadVolunteers();
+
+
+            } catch (error) {
+
+                console.error(
+                    "Error saving volunteer:",
+                    error
+                );
+
+                alert(
+                    "Error saving volunteer: " +
+                    error.message
+                );
+            }
+
+        }
+    );
+
+
+    // =========================================
+    // EDIT VOLUNTEER
+    // =========================================
+
+    function editVolunteer(id) {
+
+        const volunteer =
+            allVolunteers[id];
+
+
+        if (!volunteer) {
+
+            alert(
+                "Volunteer record not found."
+            );
+
+            return;
+        }
+
+
+        editingVolunteerId = id;
+
+
+        volunteerName.value =
+            volunteer.name || "";
+
+        volunteerEmail.value =
+            volunteer.email || "";
+
+        volunteerPhone.value =
+            volunteer.phone || "";
+
+        volunteerAddress.value =
+            volunteer.address || "";
+
+
+        formTitle.textContent =
+            "Edit Volunteer";
+
+
+        submitVolunteerBtn.textContent =
+            "Update Volunteer";
+
+
+        submitVolunteerBtn.classList.remove(
+            "bg-blue-700"
+        );
+
+        submitVolunteerBtn.classList.add(
+            "bg-green-600"
+        );
+
+
+        cancelEditBtn.classList.remove(
+            "hidden"
+        );
+
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+
+    }
+
+
+    // =========================================
+    // CANCEL EDIT
+    // =========================================
+
+    cancelEditBtn.addEventListener(
+        "click",
+        () => {
+
+            resetForm();
+
+        }
+    );
+
+
+    // =========================================
+    // RESET FORM
+    // =========================================
+
+    function resetForm() {
+
+        editingVolunteerId = null;
+
+        volunteerForm.reset();
+
+
+        formTitle.textContent =
+            "Add Volunteer";
+
+
+        submitVolunteerBtn.textContent =
+            "Add Volunteer";
+
+
+        submitVolunteerBtn.classList.remove(
+            "bg-green-600"
+        );
+
+        submitVolunteerBtn.classList.add(
+            "bg-blue-700"
+        );
+
+
+        cancelEditBtn.classList.add(
+            "hidden"
+        );
+
+    }
+
+
+    // =========================================
+    // DELETE VOLUNTEER
+    // =========================================
+
+    async function deleteVolunteer(id) {
+
+        const volunteer =
+            allVolunteers[id];
+
+
+        if (!volunteer) {
+
+            return;
+        }
+
+
+        const confirmDelete =
+            confirm(
+                "Are you sure you want to delete " +
+                volunteer.name +
+                "?"
+            );
+
+
+        if (!confirmDelete) {
+
+            return;
+        }
+
+
+        try {
+
+            const volunteerRef =
+                ref(
+                    db,
+                    "volunteers/" + id
+                );
+
+
+            await remove(
+                volunteerRef
+            );
+
+
+            alert(
+                "Volunteer deleted successfully!"
+            );
+
+
+            if (editingVolunteerId === id) {
+
+                resetForm();
+
+            }
+
+
+            await loadVolunteers();
+
+
+        } catch (error) {
+
+            console.error(
+                "Error deleting volunteer:",
+                error
+            );
+
+            alert(
+                "Error deleting volunteer: " +
+                error.message
+            );
+        }
+
+    }
+
+
+    // =========================================
+    // SEARCH VOLUNTEERS
+    // =========================================
+
+    volunteerSearch.addEventListener(
+        "input",
+        () => {
+
+            const searchText =
+                volunteerSearch.value
+                    .toLowerCase()
+                    .trim();
+
+
+            if (!searchText) {
+
+                displayVolunteers(
+                    allVolunteers
+                );
+
+                return;
+            }
+
+
+            const filteredVolunteers = {};
+
+
+            Object.keys(allVolunteers)
+                .forEach((id) => {
+
+                    const volunteer =
+                        allVolunteers[id];
+
+
+                    const name =
+                        (volunteer.name || "")
+                            .toLowerCase();
+
+                    const email =
+                        (volunteer.email || "")
+                            .toLowerCase();
+
+                    const phone =
+                        (volunteer.phone || "")
+                            .toLowerCase();
+
+
+                    if (
+                        name.includes(searchText) ||
+                        email.includes(searchText) ||
+                        phone.includes(searchText)
+                    ) {
+
+                        filteredVolunteers[id] =
+                            volunteer;
+
+                    }
+
+                });
+
+
+            displayVolunteers(
+                filteredVolunteers
+            );
+
+        }
+    );
+
+
+    // =========================================
+    // INITIAL LOAD
+    // =========================================
+
+    loadVolunteers();
+
+</script>
 
 </body>
 </html>
