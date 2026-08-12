@@ -707,3 +707,53 @@ get(donationsRef)
     });
 
 }
+
+// =========================================
+// ADMIN - TOTAL BENEFICIARIES
+// =========================================
+
+const totalBeneficiariesElement =
+    document.getElementById("totalBeneficiaries");
+
+if (totalBeneficiariesElement) {
+
+    const beneficiariesRef =
+        ref(db, "beneficiaries");
+
+    get(beneficiariesRef)
+        .then((snapshot) => {
+
+            if (snapshot.exists()) {
+
+                const beneficiaries =
+                    snapshot.val();
+
+                const totalBeneficiaries =
+                    Object.keys(beneficiaries).length;
+
+                totalBeneficiariesElement.textContent =
+                    totalBeneficiaries;
+
+                console.log(
+                    "Total beneficiaries:",
+                    totalBeneficiaries
+                );
+
+            } else {
+
+                totalBeneficiariesElement.textContent =
+                    "0";
+            }
+
+        })
+        .catch((error) => {
+
+            console.error(
+                "Error loading beneficiaries:",
+                error
+            );
+
+            totalBeneficiariesElement.textContent =
+                "0";
+        });
+}
