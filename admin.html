@@ -351,50 +351,42 @@ import { db } from "./firebase.js";
 
 
 // =========================================
-// LOAD DASHBOARD STATISTICS
+// DASHBOARD COUNTS
 // =========================================
 
 async function loadStatistics() {
 
     try {
 
-        // Volunteers
-        const volunteersSnapshot =
+        const volunteers =
             await get(ref(db, "volunteers"));
 
-        document.getElementById(
-            "totalVolunteers"
-        ).textContent =
-            volunteersSnapshot.exists()
-                ? Object.keys(volunteersSnapshot.val()).length
+        document.getElementById("totalVolunteers").textContent =
+            volunteers.exists()
+                ? Object.keys(volunteers.val()).length
                 : 0;
 
 
-        // Donations
-        const donationsSnapshot =
+        const donations =
             await get(ref(db, "donations"));
 
-        document.getElementById(
-            "totalDonations"
-        ).textContent =
-            donationsSnapshot.exists()
-                ? Object.keys(donationsSnapshot.val()).length
+        document.getElementById("totalDonations").textContent =
+            donations.exists()
+                ? Object.keys(donations.val()).length
                 : 0;
 
 
-        // Beneficiaries
-        const beneficiariesSnapshot =
+        const beneficiaries =
             await get(ref(db, "beneficiaries"));
 
-        document.getElementById(
-            "totalBeneficiaries"
-        ).textContent =
-            beneficiariesSnapshot.exists()
-                ? Object.keys(beneficiariesSnapshot.val()).length
+        document.getElementById("totalBeneficiaries").textContent =
+            beneficiaries.exists()
+                ? Object.keys(beneficiaries.val()).length
                 : 0;
 
+    }
 
-    } catch (error) {
+    catch (error) {
 
         console.error(
             "Statistics error:",
@@ -405,8 +397,9 @@ async function loadStatistics() {
 
 }
 
+
 // =========================================
-// ADMIN DASHBOARD SEARCH
+// ADMIN SEARCH
 // =========================================
 
 const searchInput =
@@ -416,174 +409,193 @@ const searchBtn =
     document.getElementById("searchBtn");
 
 
-searchBtn.addEventListener("click", async function() {
+async function searchAllRecords() {
 
     const searchText =
         searchInput.value.trim().toLowerCase();
 
-    if (!searchText) {
+
+    if (searchText === "") {
 
         alert("Please enter something to search.");
 
         return;
+
     }
+
+
+    const resultBox =
+        document.getElementById("adminSearchResults");
+
+
+    resultBox.innerHTML = `
+        <p class="text-blue-700">
+            Searching...
+        </p>
+    `;
+
+
+    const databasePaths = [
+        "volunteers",
+        "donations",
+        "beneficiaries",
+        "activities"
+    ];
+
+
+    let results = [];
+
 
     try {
 
-        const paths = [
-            "volunteers",
-            "donations",
-            "beneficiaries",
-            "activities"
-        ];
-
-        let results = [];
-
-        for (const path of paths) {
+        for (const path of databasePaths) {
 
             const snapshot =
-                await get(ref(db, path));
+                await get(
+                    ref(db, path)
+                );
+
 
             if (!snapshot.exists()) {
                 continue;
             }
 
+
             const records =
                 snapshot.val();
 
-            Object.keys(records).forEach(function(id) {
 
-                const record =
-                    records[id];
+            Object.entries(records).forEach(
+                ([id, record]) => {
 
-                const recordText =
-                    JSON.stringify(record).toLowerCase();
+                    const text =
+                        JSON.stringify(record)
+                            .toLowerCase();
 
-                if (recordText.includes(searchText)) {
 
-                    results.push({
-                        type: path,
-                        id: id,
-                        data: record
-                    });
+                    if (
+                        text.includes(searchText) ||
+                        id.toLowerCase().includes(searchText)
+                    ) {
+
+                        results.push({
+                            type: path,
+                            id: id,
+                            record: record
+                        });
+
+                    }
 
                 }
-
-            });
+            );
 
         }
-
-
-        // Remove previous results
-
-        const oldResults =
-            document.getElementById("adminSearchResults");
-
-        if (oldResults) {
-            oldResults.remove();
-        }
-
-
-        // Create results section
-
-        const resultsSection =
-            document.createElement("section");
-
-        resultsSection.id =
-            "adminSearchResults";
-
-        resultsSection.className =
-            "bg-white p-6 rounded-xl shadow-md mt-6";
 
 
         if (results.length === 0) {
 
-            resultsSection.innerHTML = `
-                <h3 class="text-xl font-bold text-blue-700 mb-3">
-                    Search Results
-                </h3>
-
+            resultBox.innerHTML = `
                 <p class="text-red-600">
                     No matching records found.
                 </p>
             `;
 
-        } else {
-
-            resultsSection.innerHTML = `
-                <h3 class="text-xl font-bold text-blue-700 mb-4">
-                    Search Results (${results.length})
-                </h3>
-            `;
-
-
-            results.forEach(function(result) {
-
-                const div =
-                    document.createElement("div");
-
-                div.className =
-                    "border border-gray-300 rounded-lg p-4 mb-3";
-
-
-                div.innerHTML = `
-
-                    <p class="font-bold text-blue-700">
-                        ${result.type.toUpperCase()}
-                    </p>
-
-                    <p class="text-sm text-gray-500 mb-2">
-                        ID: ${result.id}
-                    </p>
-
-                    <p>
-                        ${JSON.stringify(result.data)}
-                    </p>
-
-                `;
-
-
-                resultsSection.appendChild(div);
-
-            });
+            return;
 
         }
 
 
-        document.querySelector("main")
-            .appendChild(resultsSection);
+        resultBox.innerHTML = `
+
+            <h3 class="text-xl font-bold text-blue-700 mb-4">
+                Search Results (${results.length})
+            </h3>
+
+        `;
 
 
-    } catch (error) {
+        results.forEach(function(result) {
+
+            const card =
+                document.createElement("div");
+
+
+            card.className =
+                "border border-gray-300 rounded-lg p-4 mb-4";
+
+
+            card.innerHTML = `
+
+                <p class="font-bold text-blue-700 mb-2">
+                    ${result.type.toUpperCase()}
+                </p>
+
+                <p class="text-sm text-gray-500 mb-2">
+                    ID: ${result.id}
+                </p>
+
+                <pre class="text-sm whitespace-pre-wrap">
+${JSON.stringify(result.record, null, 2)}
+                </pre>
+
+            `;
+
+
+            resultBox.appendChild(card);
+
+        });
+
+
+    }
+
+    catch (error) {
 
         console.error(
             "Admin search error:",
             error
         );
 
-        alert(
-            "Search failed: " +
-            error.message
-        );
+
+        resultBox.innerHTML = `
+            <p class="text-red-600">
+                Search failed: ${error.message}
+            </p>
+        `;
 
     }
 
-});
+}
 
 
-// Search using Enter key
+// =========================================
+// SEARCH BUTTON
+// =========================================
 
-searchInput.addEventListener("keydown", function(event) {
+searchBtn.addEventListener(
+    "click",
+    searchAllRecords
+);
 
-    if (event.key === "Enter") {
 
-        event.preventDefault();
+// =========================================
+// ENTER KEY SEARCH
+// =========================================
 
-        searchBtn.click();
+searchInput.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (event.key === "Enter") {
+
+            event.preventDefault();
+
+            searchAllRecords();
+
+        }
 
     }
+);
 
-});
 
 // =========================================
 // INITIAL LOAD
