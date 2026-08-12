@@ -656,3 +656,54 @@ if (volunteerList) {
 
     loadVolunteers();
 }
+
+// =========================================
+// ADMIN - TOTAL DONATIONS
+// =========================================
+
+const totalDonationsElement =
+document.getElementById("totalDonations");
+
+if (totalDonationsElement) {
+
+const donationsRef =
+    ref(db, "donations");
+
+get(donationsRef)
+    .then((snapshot) => {
+
+        if (snapshot.exists()) {
+
+            const donations =
+                snapshot.val();
+
+            const totalDonations =
+                Object.keys(donations).length;
+
+            totalDonationsElement.textContent =
+                totalDonations;
+
+            console.log(
+                "Total donations:",
+                totalDonations
+            );
+
+        } else {
+
+            totalDonationsElement.textContent =
+                "0";
+        }
+
+    })
+    .catch((error) => {
+
+        console.error(
+            "Error loading donations:",
+            error
+        );
+
+        totalDonationsElement.textContent =
+            "0";
+    });
+
+}
