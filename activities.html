@@ -888,8 +888,10 @@
     );
 
        // =========================================
-// EDIT ACTIVITY
+// OPEN EDIT ACTIVITY FORM
 // =========================================
+
+let currentActivityId = null;
 
 document.addEventListener("click", async function(event) {
 
@@ -897,13 +899,13 @@ document.addEventListener("click", async function(event) {
         return;
     }
 
-    const activityId = event.target.dataset.id;
+    currentActivityId = event.target.dataset.id;
 
     try {
 
         const activityRef = ref(
             db,
-            "activities/" + activityId
+            "activities/" + currentActivityId
         );
 
         const snapshot = await get(activityRef);
@@ -912,83 +914,59 @@ document.addEventListener("click", async function(event) {
 
             alert("Activity not found.");
             return;
-
         }
 
         const activity = snapshot.val();
 
-        const newName = prompt(
-            "Activity Name:",
-            activity.activityName || ""
-        );
+        // Fill Edit Form
 
-        if (newName === null) {
-            return;
-        }
+        document.getElementById(
+            "editActivityName"
+        ).value = activity.activityName || "";
 
-        const newType = prompt(
-            "Activity Type:",
-            activity.activityType || ""
-        );
+        document.getElementById(
+            "editActivityType"
+        ).value = activity.activityType || "Other";
 
-        if (newType === null) {
-            return;
-        }
+        document.getElementById(
+            "editActivityDate"
+        ).value = activity.activityDate || "";
 
-        const newDate = prompt(
-            "Activity Date:",
-            activity.activityDate || ""
-        );
+        document.getElementById(
+            "editActivityLocation"
+        ).value = activity.location || "";
 
-        if (newDate === null) {
-            return;
-        }
+        document.getElementById(
+            "editActivityDescription"
+        ).value = activity.description || "";
 
-        const newLocation = prompt(
-            "Location:",
-            activity.location || ""
-        );
+        // Show Edit Form
 
-        if (newLocation === null) {
-            return;
-        }
+        document.getElementById(
+            "editActivitySection"
+        ).classList.remove("hidden");
 
-        const newDescription = prompt(
-            "Description:",
-            activity.description || ""
-        );
+        // Scroll to Edit Form
 
-        if (newDescription === null) {
-            return;
-        }
+        document.getElementById(
+            "editActivitySection"
+        ).scrollIntoView({
+            behavior: "smooth"
+        });
 
-        await set(
-            activityRef,
-            {
-                activityName: newName.trim(),
-                activityType: newType.trim(),
-                activityDate: newDate.trim(),
-                location: newLocation.trim(),
-                description: newDescription.trim()
-            }
-        );
+    }
 
-        alert("Activity updated successfully!");
-
-        loadActivities();
-
-    } catch (error) {
+    catch (error) {
 
         console.error(
-            "Update activity error:",
+            "Open edit error:",
             error
         );
 
         alert(
-            "Failed to update activity: " +
+            "Failed to open activity: " +
             error.message
         );
-
     }
 
 });
