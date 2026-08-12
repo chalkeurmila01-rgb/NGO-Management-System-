@@ -1,12 +1,8 @@
- <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">
 
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>
-    NGO Activities - NGO Management System
-</title>
+<title>NGO Activities - NGO Management System</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
 
@@ -14,20 +10,16 @@
 
 <nav class="bg-blue-700 text-white p-4">
 
-    <div
-        class="max-w-6xl mx-auto flex justify-between items-center">
+    <div class="max-w-6xl mx-auto flex justify-between items-center">
 
         <h1 class="text-xl font-bold">
             NGO Management System
         </h1>
 
-
         <a
             href="admin.html"
             class="bg-white text-blue-700 px-4 py-2 rounded-lg font-semibold">
-
             Back to Admin
-
         </a>
 
     </div>
@@ -41,7 +33,7 @@
 <main class="max-w-6xl mx-auto px-4 py-10">
 
 
-    <!-- Page Heading -->
+    <!-- Heading -->
 
     <div class="mb-8">
 
@@ -57,16 +49,12 @@
 
 
 
-    <!-- Add Activity -->
+    <!-- Add Activity Form -->
 
-    <section
-        class="bg-white p-6 rounded-xl shadow-md">
+    <section class="bg-white p-6 rounded-xl shadow-md">
 
-        <h3
-            class="text-2xl font-bold text-blue-700 mb-6">
-
+        <h3 class="text-2xl font-bold text-blue-700 mb-6">
             Add NGO Activity
-
         </h3>
 
 
@@ -77,13 +65,9 @@
 
             <div class="mb-4">
 
-                <label
-                    class="block font-medium mb-1">
-
+                <label class="block font-medium mb-1">
                     Activity Name
-
                 </label>
-
 
                 <input
                     type="text"
@@ -100,13 +84,9 @@
 
             <div class="mb-4">
 
-                <label
-                    class="block font-medium mb-1">
-
+                <label class="block font-medium mb-1">
                     Activity Type
-
                 </label>
-
 
                 <select
                     id="activityType"
@@ -147,17 +127,13 @@
 
 
 
-            <!-- Date -->
+            <!-- Activity Date -->
 
             <div class="mb-4">
 
-                <label
-                    class="block font-medium mb-1">
-
+                <label class="block font-medium mb-1">
                     Activity Date
-
                 </label>
-
 
                 <input
                     type="date"
@@ -173,13 +149,9 @@
 
             <div class="mb-4">
 
-                <label
-                    class="block font-medium mb-1">
-
+                <label class="block font-medium mb-1">
                     Location
-
                 </label>
-
 
                 <input
                     type="text"
@@ -196,26 +168,22 @@
 
             <div class="mb-6">
 
-                <label
-                    class="block font-medium mb-1">
-
+                <label class="block font-medium mb-1">
                     Description
-
                 </label>
-
 
                 <textarea
                     id="activityDescription"
                     placeholder="Enter activity description"
                     required
-                    class="w-full border border-gray-300 rounded-lg p-3"
-                    rows="4"></textarea>
+                    rows="4"
+                    class="w-full border border-gray-300 rounded-lg p-3"></textarea>
 
             </div>
 
 
 
-            <!-- Button -->
+            <!-- Add Button -->
 
             <button
                 type="submit"
@@ -234,16 +202,11 @@
 
     <!-- Activity Records -->
 
-    <section
-        class="bg-white p-6 rounded-xl shadow-md mt-8">
+    <section class="bg-white p-6 rounded-xl shadow-md mt-8">
 
-        <h3
-            class="text-2xl font-bold text-blue-700 mb-6">
-
+        <h3 class="text-2xl font-bold text-blue-700 mb-6">
             Activity Records
-
         </h3>
-
 
         <div id="activityList">
 
@@ -262,18 +225,15 @@
 
 <!-- Footer -->
 
-<footer
-    class="bg-gray-800 text-white text-center p-5 mt-10">
+<footer class="bg-gray-800 text-white text-center p-5 mt-10">
 
     <p>
         NGO Management System
     </p>
 
-
     <p class="text-gray-400 text-sm mt-1">
         NGO Activities Management
     </p>
-
 
     <p class="text-gray-400 text-sm mt-2">
         © 2026 NGO Management System
@@ -283,11 +243,259 @@
 
 
 
-<!-- Authentication -->
+<!-- Existing Authentication -->
 
-<script
-    type="module"
-    src="auth.js">
+<script type="module" src="auth.js"></script>
+
+
+
+<!-- Activity Firebase Logic -->
+
+<script type="module">
+
+    import {
+        ref,
+        push,
+        set,
+        get
+    } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-database.js";
+
+
+    import {
+        db
+    } from "./firebase.js";
+
+
+    const activityForm =
+        document.getElementById("activityForm");
+
+
+    const activityList =
+        document.getElementById("activityList");
+
+
+
+    // =========================================
+    // ADD ACTIVITY
+    // =========================================
+
+    activityForm.addEventListener(
+        "submit",
+        async function(event) {
+
+            event.preventDefault();
+
+
+            const activityName =
+                document.getElementById(
+                    "activityName"
+                ).value.trim();
+
+
+            const activityType =
+                document.getElementById(
+                    "activityType"
+                ).value;
+
+
+            const activityDate =
+                document.getElementById(
+                    "activityDate"
+                ).value;
+
+
+            const activityLocation =
+                document.getElementById(
+                    "activityLocation"
+                ).value.trim();
+
+
+            const activityDescription =
+                document.getElementById(
+                    "activityDescription"
+                ).value.trim();
+
+
+
+            try {
+
+                const newActivityRef =
+                    push(
+                        ref(db, "activities")
+                    );
+
+
+                await set(
+                    newActivityRef,
+                    {
+
+                        activityName:
+                            activityName,
+
+                        activityType:
+                            activityType,
+
+                        activityDate:
+                            activityDate,
+
+                        location:
+                            activityLocation,
+
+                        description:
+                            activityDescription
+
+                    }
+                );
+
+
+                alert(
+                    "Activity added successfully!"
+                );
+
+
+                activityForm.reset();
+
+
+                loadActivities();
+
+
+            } catch (error) {
+
+                console.error(
+                    "Activity error:",
+                    error
+                );
+
+
+                alert(
+                    "Failed to add activity: " +
+                    error.message
+                );
+
+            }
+
+        }
+    );
+
+
+
+    // =========================================
+    // LOAD ACTIVITIES
+    // =========================================
+
+    async function loadActivities() {
+
+        try {
+
+            const snapshot =
+                await get(
+                    ref(
+                        db,
+                        "activities"
+                    )
+                );
+
+
+            activityList.innerHTML = "";
+
+
+            if (!snapshot.exists()) {
+
+                activityList.innerHTML = `
+                    <p class="text-gray-500">
+                        No activities found.
+                    </p>
+                `;
+
+                return;
+
+            }
+
+
+            const activities =
+                snapshot.val();
+
+
+            Object.keys(activities).forEach(
+                function(id) {
+
+                    const activity =
+                        activities[id];
+
+
+                    const div =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    div.className =
+                        "border border-gray-300 rounded-lg p-5 mb-4";
+
+
+                    div.innerHTML = `
+
+                        <h4 class="text-xl font-bold text-blue-700">
+                            ${activity.activityName}
+                        </h4>
+
+                        <p>
+                            <strong>Type:</strong>
+                            ${activity.activityType}
+                        </p>
+
+                        <p>
+                            <strong>Date:</strong>
+                            ${activity.activityDate}
+                        </p>
+
+                        <p>
+                            <strong>Location:</strong>
+                            ${activity.location}
+                        </p>
+
+                        <p>
+                            <strong>Description:</strong>
+                            ${activity.description}
+                        </p>
+
+                    `;
+
+
+                    activityList.appendChild(
+                        div
+                    );
+
+                }
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "Loading activities error:",
+                error
+            );
+
+
+            activityList.innerHTML = `
+                <p class="text-red-600">
+                    Error loading activities.
+                </p>
+            `;
+
+        }
+
+    }
+
+
+
+    // =========================================
+    // INITIAL LOAD
+    // =========================================
+
+    loadActivities();
+
 </script>
 
 </body></html>
