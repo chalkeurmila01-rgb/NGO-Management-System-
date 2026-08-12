@@ -27,7 +27,6 @@
 </nav>
 
 
-
 <!-- Main Content -->
 
 <main class="max-w-6xl mx-auto px-4 py-10">
@@ -49,7 +48,7 @@
 
 
 
-    <!-- Add Activity Form -->
+    <!-- Add Activity -->
 
     <section class="bg-white p-6 rounded-xl shadow-md">
 
@@ -60,8 +59,6 @@
 
         <form id="activityForm">
 
-
-            <!-- Activity Name -->
 
             <div class="mb-4">
 
@@ -79,8 +76,6 @@
             </div>
 
 
-
-            <!-- Activity Type -->
 
             <div class="mb-4">
 
@@ -127,8 +122,6 @@
 
 
 
-            <!-- Activity Date -->
-
             <div class="mb-4">
 
                 <label class="block font-medium mb-1">
@@ -144,8 +137,6 @@
             </div>
 
 
-
-            <!-- Location -->
 
             <div class="mb-4">
 
@@ -164,8 +155,6 @@
 
 
 
-            <!-- Description -->
-
             <div class="mb-6">
 
                 <label class="block font-medium mb-1">
@@ -183,62 +172,64 @@
 
 
 
-            <!-- Add Button -->
-
             <button
                 type="submit"
-                class="bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-800">
+                class="bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold">
 
                 Add Activity
 
             </button>
 
-
         </form>
 
     </section>
 
-   <!-- Activity Records -->
-
-<section class="bg-white p-6 rounded-xl shadow-md mt-8">
-
-    <h3 class="text-2xl font-bold text-blue-700 mb-6">
-        Activity Records
-    </h3>
 
 
-    <!-- Search -->
+    <!-- Activity Records -->
 
-    <div class="flex flex-col md:flex-row gap-3 mb-6">
+    <section class="bg-white p-6 rounded-xl shadow-md mt-8">
 
-        <input
-            type="text"
-            id="activitySearch"
-            placeholder="Search activities..."
-            class="flex-1 border border-gray-300 rounded-lg p-3">
-
-        <button
-            id="activitySearchBtn"
-            class="bg-blue-700 text-white px-6 py-3 rounded-lg">
-
-            Search
-
-        </button>
-
-    </div>
+        <h3 class="text-2xl font-bold text-blue-700 mb-6">
+            Activity Records
+        </h3>
 
 
-    <!-- Activity List -->
+        <!-- Search -->
 
-    <div id="activityList">
+        <div class="flex flex-col md:flex-row gap-3 mb-6">
 
-        <p class="text-gray-500">
-            No activities loaded yet.
-        </p>
+            <input
+                type="text"
+                id="activitySearch"
+                placeholder="Search activities..."
+                class="flex-1 border border-gray-300 rounded-lg p-3">
 
-    </div>
 
-</section>
+            <button
+                type="button"
+                id="activitySearchBtn"
+                class="bg-blue-700 text-white px-6 py-3 rounded-lg">
+
+                Search
+
+            </button>
+
+        </div>
+
+
+        <!-- Activity List -->
+
+        <div id="activityList">
+
+            <p class="text-gray-500">
+                No activities loaded yet.
+            </p>
+
+        </div>
+
+    </section>
+
 
 </main>
 
@@ -264,13 +255,13 @@
 
 
 
-<!-- Existing Authentication -->
+<!-- Authentication -->
 
 <script type="module" src="auth.js"></script>
 
 
 
-<!-- Activity Firebase Logic -->
+<!-- Firebase Activities -->
 
 <script type="module">
 
@@ -287,12 +278,21 @@
     } from "./firebase.js";
 
 
+
     const activityForm =
         document.getElementById("activityForm");
 
 
     const activityList =
         document.getElementById("activityList");
+
+
+    const activitySearch =
+        document.getElementById("activitySearch");
+
+
+    const activitySearchBtn =
+        document.getElementById("activitySearchBtn");
 
 
 
@@ -337,7 +337,6 @@
                 ).value.trim();
 
 
-
             try {
 
                 const newActivityRef =
@@ -379,8 +378,10 @@
 
                 loadActivities();
 
+            }
 
-            } catch (error) {
+
+            catch (error) {
 
                 console.error(
                     "Activity error:",
@@ -404,7 +405,9 @@
     // LOAD ACTIVITIES
     // =========================================
 
-    async function loadActivities() {
+    async function loadActivities(
+        searchText = ""
+    ) {
 
         try {
 
@@ -437,11 +440,68 @@
                 snapshot.val();
 
 
+            let found = false;
+
+
             Object.keys(activities).forEach(
                 function(id) {
 
                     const activity =
                         activities[id];
+
+
+                    const search =
+                        searchText
+                            .toLowerCase();
+
+
+                    const name =
+                        (
+                            activity.activityName || ""
+                        ).toLowerCase();
+
+
+                    const type =
+                        (
+                            activity.activityType || ""
+                        ).toLowerCase();
+
+
+                    const location =
+                        (
+                            activity.location || ""
+                        ).toLowerCase();
+
+
+                    const description =
+                        (
+                            activity.description || ""
+                        ).toLowerCase();
+
+
+                    const date =
+                        (
+                            activity.activityDate || ""
+                        ).toLowerCase();
+
+
+
+                    const matches =
+                        name.includes(search) ||
+                        type.includes(search) ||
+                        location.includes(search) ||
+                        description.includes(search) ||
+                        date.includes(search);
+
+
+                    if (!matches) {
+
+                        return;
+
+                    }
+
+
+                    found = true;
 
 
                     const div =
@@ -460,7 +520,7 @@
                             ${activity.activityName}
                         </h4>
 
-                        <p>
+                        <p class="mt-2">
                             <strong>Type:</strong>
                             ${activity.activityType}
                         </p>
@@ -491,7 +551,21 @@
             );
 
 
-        } catch (error) {
+            if (!found) {
+
+                activityList.innerHTML = `
+                    <p class="text-red-600">
+                        No matching activities found.
+                    </p>
+                `;
+
+            }
+
+
+        }
+
+
+        catch (error) {
 
             console.error(
                 "Loading activities error:",
@@ -508,6 +582,56 @@
         }
 
     }
+
+
+
+    // =========================================
+    // SEARCH BUTTON
+    // =========================================
+
+    activitySearchBtn.addEventListener(
+        "click",
+        function() {
+
+            const searchText =
+                activitySearch.value.trim();
+
+
+            loadActivities(
+                searchText
+            );
+
+        }
+    );
+
+
+
+    // =========================================
+    // SEARCH WITH ENTER KEY
+    // =========================================
+
+    activitySearch.addEventListener(
+        "keydown",
+        function(event) {
+
+            if (
+                event.key === "Enter"
+            ) {
+
+                event.preventDefault();
+
+                const searchText =
+                    activitySearch.value.trim();
+
+
+                loadActivities(
+                    searchText
+                );
+
+            }
+
+        }
+    );
 
 
 
