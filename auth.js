@@ -1,4 +1,3 @@
-
 // =========================================
 // NGO Management System
 // Authentication
@@ -14,7 +13,8 @@ import {
 import {
     ref,
     set,
-    get
+    get,
+    push
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-database.js";
 
 import {
@@ -40,7 +40,6 @@ if (loginForm) {
 
         try {
 
-            // Firebase Authentication
             const userCredential =
                 await signInWithEmailAndPassword(
                     auth,
@@ -53,7 +52,6 @@ if (loginForm) {
             console.log("Login successful!");
             console.log("User:", user);
 
-            // Get user's data from Realtime Database
             const userRef = ref(db, "users/" + user.uid);
             const snapshot = await get(userRef);
 
@@ -65,7 +63,6 @@ if (loginForm) {
 
                 alert("Login successful!");
 
-                // Check user role
                 if (userData.role === "admin") {
 
                     window.location.href = "admin.html";
@@ -104,14 +101,19 @@ if (registerForm) {
 
         event.preventDefault();
 
-        const name = document.getElementById("name").value;
-        const email = document.getElementById("email").value;
-        const password = document.getElementById("password").value;
+        const name =
+            document.getElementById("name").value;
+
+        const email =
+            document.getElementById("email").value;
+
+        const password =
+            document.getElementById("password").value;
+
         const confirmPassword =
             document.getElementById("confirmPassword").value;
 
 
-        // Check passwords
         if (password !== confirmPassword) {
 
             alert("Passwords do not match.");
@@ -122,7 +124,6 @@ if (registerForm) {
 
         try {
 
-            // Create Firebase Authentication user
             const userCredential =
                 await createUserWithEmailAndPassword(
                     auth,
@@ -133,14 +134,14 @@ if (registerForm) {
             const user = userCredential.user;
 
 
-            // Save user information in Realtime Database
-            await set(ref(db, "users/" + user.uid), {
-
-                name: name,
-                email: email,
-                role: "user"
-
-            });
+            await set(
+                ref(db, "users/" + user.uid),
+                {
+                    name: name,
+                    email: email,
+                    role: "user"
+                }
+            );
 
 
             console.log("Registration successful!");
@@ -164,7 +165,8 @@ if (registerForm) {
 // USER LOGOUT
 // =========================================
 
-const logoutBtn = document.getElementById("logoutBtn");
+const logoutBtn =
+    document.getElementById("logoutBtn");
 
 if (logoutBtn) {
 
@@ -235,27 +237,34 @@ if (isDashboardPage) {
             return;
         }
 
-        console.log("Authenticated user:", user.email);
+        console.log(
+            "Authenticated user:",
+            user.email
+        );
 
-        // Check role
-        const userRef = ref(db, "users/" + user.uid);
-        const snapshot = await get(userRef);
+        const userRef =
+            ref(db, "users/" + user.uid);
+
+        const snapshot =
+            await get(userRef);
 
         if (snapshot.exists()) {
 
-            const userData = snapshot.val();
+            const userData =
+                snapshot.val();
 
-            // Admin should not stay on user dashboard
             if (userData.role === "admin") {
 
-                window.location.href = "admin.html";
+                window.location.href =
+                    "admin.html";
             }
 
         } else {
 
             await signOut(auth);
 
-            window.location.href = "login.html";
+            window.location.href =
+                "login.html";
         }
     });
 }
@@ -274,39 +283,52 @@ if (isAdminPage) {
 
         if (!user) {
 
-            window.location.href = "login.html";
+            window.location.href =
+                "login.html";
 
             return;
         }
 
-        console.log("Checking admin access...");
+        console.log(
+            "Checking admin access..."
+        );
 
-        // Get user's database record
-        const userRef = ref(db, "users/" + user.uid);
-        const snapshot = await get(userRef);
+        const userRef =
+            ref(db, "users/" + user.uid);
+
+        const snapshot =
+            await get(userRef);
 
         if (snapshot.exists()) {
 
-            const userData = snapshot.val();
+            const userData =
+                snapshot.val();
 
-            console.log("User role:", userData.role);
+            console.log(
+                "User role:",
+                userData.role
+            );
 
-            // Allow only admin
             if (userData.role !== "admin") {
 
-                alert("Access denied. Admin only.");
+                alert(
+                    "Access denied. Admin only."
+                );
 
-                window.location.href = "dashboard.html";
+                window.location.href =
+                    "dashboard.html";
             }
 
         } else {
 
             await signOut(auth);
 
-            window.location.href = "login.html";
+            window.location.href =
+                "login.html";
         }
     });
-                }
+}
+
 
 // =========================================
 // ADMIN - TOTAL USERS
@@ -317,14 +339,16 @@ const totalUsersElement =
 
 if (totalUsersElement) {
 
-    const usersRef = ref(db, "users");
+    const usersRef =
+        ref(db, "users");
 
     get(usersRef)
         .then((snapshot) => {
 
             if (snapshot.exists()) {
 
-                const users = snapshot.val();
+                const users =
+                    snapshot.val();
 
                 const totalUsers =
                     Object.keys(users).length;
@@ -334,7 +358,8 @@ if (totalUsersElement) {
 
             } else {
 
-                totalUsersElement.textContent = "0";
+                totalUsersElement.textContent =
+                    "0";
             }
 
         })
@@ -345,9 +370,11 @@ if (totalUsersElement) {
                 error
             );
 
-            totalUsersElement.textContent = "0";
+            totalUsersElement.textContent =
+                "0";
         });
 }
+
 
 // =========================================
 // ADMIN - TOTAL VOLUNTEERS
@@ -397,4 +424,233 @@ if (totalVolunteersElement) {
             totalVolunteersElement.textContent =
                 "0";
         });
+}
+
+
+// =========================================
+// VOLUNTEER MANAGEMENT
+// =========================================
+
+// Volunteer form
+const volunteerForm =
+    document.getElementById("volunteerForm");
+
+
+// =========================================
+// ADD VOLUNTEER
+// =========================================
+
+if (volunteerForm) {
+
+    volunteerForm.addEventListener(
+        "submit",
+        async (event) => {
+
+            event.preventDefault();
+
+
+            const name =
+                document.getElementById(
+                    "volunteerName"
+                ).value.trim();
+
+            const email =
+                document.getElementById(
+                    "volunteerEmail"
+                ).value.trim();
+
+            const phone =
+                document.getElementById(
+                    "volunteerPhone"
+                ).value.trim();
+
+            const address =
+                document.getElementById(
+                    "volunteerAddress"
+                ).value.trim();
+
+
+            if (
+                !name ||
+                !email ||
+                !phone ||
+                !address
+            ) {
+
+                alert(
+                    "Please fill all volunteer fields."
+                );
+
+                return;
+            }
+
+
+            try {
+
+                // Create a unique Firebase ID
+                const volunteerRef =
+                    push(ref(db, "volunteers"));
+
+
+                // Save volunteer data
+                await set(
+                    volunteerRef,
+                    {
+                        name: name,
+                        email: email,
+                        phone: phone,
+                        address: address
+                    }
+                );
+
+
+                console.log(
+                    "Volunteer added successfully."
+                );
+
+
+                alert(
+                    "Volunteer added successfully!"
+                );
+
+
+                // Clear form
+                volunteerForm.reset();
+
+
+                // Reload volunteer records
+                loadVolunteers();
+
+
+            } catch (error) {
+
+                console.error(
+                    "Error adding volunteer:",
+                    error
+                );
+
+                alert(
+                    "Failed to add volunteer: " +
+                    error.message
+                );
+            }
+        }
+    );
+}
+
+
+// =========================================
+// LOAD VOLUNTEERS
+// =========================================
+
+const volunteerList =
+    document.getElementById("volunteerList");
+
+
+async function loadVolunteers() {
+
+    if (!volunteerList) {
+
+        return;
+    }
+
+
+    try {
+
+        const volunteersRef =
+            ref(db, "volunteers");
+
+        const snapshot =
+            await get(volunteersRef);
+
+
+        if (!snapshot.exists()) {
+
+            volunteerList.innerHTML = `
+                <p class="text-gray-500">
+                    No volunteers found.
+                </p>
+            `;
+
+            return;
+        }
+
+
+        const volunteers =
+            snapshot.val();
+
+
+        volunteerList.innerHTML = "";
+
+
+        Object.keys(volunteers).forEach(
+            (volunteerId) => {
+
+                const volunteer =
+                    volunteers[volunteerId];
+
+
+                const volunteerCard =
+                    document.createElement("div");
+
+
+                volunteerCard.className =
+                    "border border-gray-200 rounded-lg p-5 mb-4";
+
+
+                volunteerCard.innerHTML = `
+
+                    <h4 class="text-xl font-bold text-blue-700 mb-2">
+                        ${volunteer.name}
+                    </h4>
+
+                    <p class="text-gray-600">
+                        <strong>Email:</strong>
+                        ${volunteer.email}
+                    </p>
+
+                    <p class="text-gray-600">
+                        <strong>Phone:</strong>
+                        ${volunteer.phone}
+                    </p>
+
+                    <p class="text-gray-600">
+                        <strong>Address:</strong>
+                        ${volunteer.address}
+                    </p>
+
+                `;
+
+
+                volunteerList.appendChild(
+                    volunteerCard
+                );
+            }
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Error loading volunteers:",
+            error
+        );
+
+
+        volunteerList.innerHTML = `
+            <p class="text-red-600">
+                Error loading volunteer records.
+            </p>
+        `;
+    }
+}
+
+
+// =========================================
+// LOAD VOLUNTEERS WHEN PAGE OPENS
+// =========================================
+
+if (volunteerList) {
+
+    loadVolunteers();
 }
