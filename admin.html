@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Admin Panel - NGO Management System</title>
 
@@ -338,4 +340,79 @@
     src="auth.js">
 </script>
 
-</body></html>
+<script type="module">
+
+import {
+    ref,
+    get
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-database.js";
+
+import { db } from "./firebase.js";
+
+
+// =========================================
+// LOAD DASHBOARD STATISTICS
+// =========================================
+
+async function loadStatistics() {
+
+    try {
+
+        // Volunteers
+        const volunteersSnapshot =
+            await get(ref(db, "volunteers"));
+
+        document.getElementById(
+            "totalVolunteers"
+        ).textContent =
+            volunteersSnapshot.exists()
+                ? Object.keys(volunteersSnapshot.val()).length
+                : 0;
+
+
+        // Donations
+        const donationsSnapshot =
+            await get(ref(db, "donations"));
+
+        document.getElementById(
+            "totalDonations"
+        ).textContent =
+            donationsSnapshot.exists()
+                ? Object.keys(donationsSnapshot.val()).length
+                : 0;
+
+
+        // Beneficiaries
+        const beneficiariesSnapshot =
+            await get(ref(db, "beneficiaries"));
+
+        document.getElementById(
+            "totalBeneficiaries"
+        ).textContent =
+            beneficiariesSnapshot.exists()
+                ? Object.keys(beneficiariesSnapshot.val()).length
+                : 0;
+
+
+    } catch (error) {
+
+        console.error(
+            "Statistics error:",
+            error
+        );
+
+    }
+
+}
+
+
+// =========================================
+// INITIAL LOAD
+// =========================================
+
+loadStatistics();
+
+</script>
+
+</body>
+</html>
