@@ -760,277 +760,110 @@
     );
 
        // =========================================
-        // OPEN EDIT FORM
-        // =========================================
+// EDIT ACTIVITY
+// =========================================
 
-        document.addEventListener(
-            "click",
-            async function(event) {
+document.addEventListener("click", async function(event) {
 
+    if (!event.target.classList.contains("editActivityBtn")) {
+        return;
+    }
 
-                if (
-                    !event.target.classList.contains(
-                        "editActivityBtn"
-                    )
-                ) {
+    const activityId = event.target.dataset.id;
 
-                    return;
+    try {
 
-                }
+        const activityRef = ref(
+            db,
+            "activities/" + activityId
+        );
 
+        const snapshot = await get(activityRef);
 
-                currentActivityId =
-                    event.target.dataset.id;
+        if (!snapshot.exists()) {
 
+            alert("Activity not found.");
+            return;
 
-                try {
+        }
 
-                    const activityRef =
-                        ref(
-                            db,
-                            "activities/" +
-                            currentActivityId
-                        );
+        const activity = snapshot.val();
 
+        const newName = prompt(
+            "Activity Name:",
+            activity.activityName || ""
+        );
 
-                    const snapshot =
-                        await get(
-                            activityRef
-                        );
+        if (newName === null) {
+            return;
+        }
 
+        const newType = prompt(
+            "Activity Type:",
+            activity.activityType || ""
+        );
 
-                    if (!snapshot.exists()) {
+        if (newType === null) {
+            return;
+        }
 
-                        alert(
-                            "Activity not found."
-                        );
+        const newDate = prompt(
+            "Activity Date:",
+            activity.activityDate || ""
+        );
 
-                        return;
+        if (newDate === null) {
+            return;
+        }
 
-                    }
+        const newLocation = prompt(
+            "Location:",
+            activity.location || ""
+        );
 
+        if (newLocation === null) {
+            return;
+        }
 
-                    const activity =
-                        snapshot.val();
+        const newDescription = prompt(
+            "Description:",
+            activity.description || ""
+        );
 
+        if (newDescription === null) {
+            return;
+        }
 
-
-                    // Fill edit form
-
-                    document.getElementById(
-                        "editActivityName"
-                    ).value =
-                        activity.activityName || "";
-
-
-                    document.getElementById(
-                        "editActivityType"
-                    ).value =
-                        activity.activityType || "Other";
-
-
-                    document.getElementById(
-                        "editActivityDate"
-                    ).value =
-                        activity.activityDate || "";
-
-
-                    document.getElementById(
-                        "editActivityLocation"
-                    ).value =
-                        activity.location || "";
-
-
-                    document.getElementById(
-                        "editActivityDescription"
-                    ).value =
-                        activity.description || "";
-
-
-
-                    // Show form
-
-                    editActivitySection.classList.remove(
-                        "hidden"
-                    );
-
-
-                    // Scroll to edit form
-
-                    editActivitySection.scrollIntoView({
-                        behavior: "smooth"
-                    });
-
-
-                }
-
-                catch (error) {
-
-                    console.error(
-                        "Edit activity error:",
-                        error
-                    );
-
-
-                    alert(
-                        "Failed to open activity: " +
-                        error.message
-                    );
-
-                }
-
+        await set(
+            activityRef,
+            {
+                activityName: newName.trim(),
+                activityType: newType.trim(),
+                activityDate: newDate.trim(),
+                location: newLocation.trim(),
+                description: newDescription.trim()
             }
         );
 
+        alert("Activity updated successfully!");
 
+        loadActivities();
 
-        // =========================================
-        // UPDATE ACTIVITY
-        // =========================================
+    } catch (error) {
 
-        editActivityForm.addEventListener(
-            "submit",
-            async function(event) {
-
-                event.preventDefault();
-
-
-                if (!currentActivityId) {
-
-                    alert(
-                        "No activity selected."
-                    );
-
-                    return;
-
-                }
-
-
-                const updatedName =
-                    document.getElementById(
-                        "editActivityName"
-                    ).value.trim();
-
-
-                const updatedType =
-                    document.getElementById(
-                        "editActivityType"
-                    ).value;
-
-
-                const updatedDate =
-                    document.getElementById(
-                        "editActivityDate"
-                    ).value;
-
-
-                const updatedLocation =
-                    document.getElementById(
-                        "editActivityLocation"
-                    ).value.trim();
-
-
-                const updatedDescription =
-                    document.getElementById(
-                        "editActivityDescription"
-                    ).value.trim();
-
-
-
-                try {
-
-                    const activityRef =
-                        ref(
-                            db,
-                            "activities/" +
-                            currentActivityId
-                        );
-
-
-                    await set(
-                        activityRef,
-                        {
-
-                            activityName:
-                                updatedName,
-
-                            activityType:
-                                updatedType,
-
-                            activityDate:
-                                updatedDate,
-
-                            location:
-                                updatedLocation,
-
-                            description:
-                                updatedDescription
-
-                        }
-                    );
-
-
-                    alert(
-                        "Activity updated successfully!"
-                    );
-
-
-                    editActivityForm.reset();
-
-
-                    editActivitySection.classList.add(
-                        "hidden"
-                    );
-
-
-                    currentActivityId = null;
-
-
-                    loadActivities();
-
-
-                }
-
-                catch (error) {
-
-                    console.error(
-                        "Update activity error:",
-                        error
-                    );
-
-
-                    alert(
-                        "Failed to update activity: " +
-                        error.message
-                    );
-
-                }
-
-            }
+        console.error(
+            "Update activity error:",
+            error
         );
 
-
-
-        // =========================================
-        // CANCEL EDIT
-        // =========================================
-
-        cancelEditBtn.addEventListener(
-            "click",
-            function() {
-
-                editActivityForm.reset();
-
-
-                editActivitySection.classList.add(
-                    "hidden"
-                );
-
-
-                currentActivityId = null;
-
-            }
+        alert(
+            "Failed to update activity: " +
+            error.message
         );
+
+    }
+
+});
 
        // =========================================
 // DELETE ACTIVITY
