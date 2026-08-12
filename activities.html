@@ -909,52 +909,146 @@
         }
     );
 
+       // =========================================
+        // OPEN EDIT FORM
+        // =========================================
+
+        document.addEventListener(
+            "click",
+            async function(event) {
 
 
-    // =========================================
-    // OPEN EDIT FORM
-    // =========================================
+                if (
+                    !event.target.classList.contains(
+                        "editActivityBtn"
+                    )
+                ) {
 
-    document.addEventListener(
-        "click",
-        async function(event) {
+                    return;
 
-
-            if (
-                !event.target.classList.contains(
-                    "editActivityBtn"
-                )
-            ) {
-
-                return;
-
-            }
+                }
 
 
-            currentActivityId =
-                event.target.dataset.id;
+                currentActivityId =
+                    event.target.dataset.id;
 
 
-            try {
+                try {
 
-                const activityRef =
-                    ref(
-                        db,
-                        "activities/" +
-                        currentActivityId
+                    const activityRef =
+                        ref(
+                            db,
+                            "activities/" +
+                            currentActivityId
+                        );
+
+
+                    const snapshot =
+                        await get(
+                            activityRef
+                        );
+
+
+                    if (!snapshot.exists()) {
+
+                        alert(
+                            "Activity not found."
+                        );
+
+                        return;
+
+                    }
+
+
+                    const activity =
+                        snapshot.val();
+
+
+
+                    // Fill edit form
+
+                    document.getElementById(
+                        "editActivityName"
+                    ).value =
+                        activity.activityName || "";
+
+
+                    document.getElementById(
+                        "editActivityType"
+                    ).value =
+                        activity.activityType || "Other";
+
+
+                    document.getElementById(
+                        "editActivityDate"
+                    ).value =
+                        activity.activityDate || "";
+
+
+                    document.getElementById(
+                        "editActivityLocation"
+                    ).value =
+                        activity.location || "";
+
+
+                    document.getElementById(
+                        "editActivityDescription"
+                    ).value =
+                        activity.description || "";
+
+
+
+                    // Show form
+
+                    editActivitySection.classList.remove(
+                        "hidden"
                     );
 
 
-                const snapshot =
-                    await get(
-                        activityRef
+                    // Scroll to edit form
+
+                    editActivitySection.scrollIntoView({
+                        behavior: "smooth"
+                    });
+
+
+                }
+
+                catch (error) {
+
+                    console.error(
+                        "Edit activity error:",
+                        error
                     );
 
-
-                if (!snapshot.exists()) {
 
                     alert(
-                        "Activity not found."
+                        "Failed to open activity: " +
+                        error.message
+                    );
+
+                }
+
+            }
+        );
+
+
+
+        // =========================================
+        // UPDATE ACTIVITY
+        // =========================================
+
+        editActivityForm.addEventListener(
+            "submit",
+            async function(event) {
+
+                event.preventDefault();
+
+
+                if (!currentActivityId) {
+
+                    alert(
+                        "No activity selected."
                     );
 
                     return;
@@ -962,38 +1056,144 @@
                 }
 
 
-                const activity =
-                    snapshot.val();
+                const updatedName =
+                    document.getElementById(
+                        "editActivityName"
+                    ).value.trim();
+
+
+                const updatedType =
+                    document.getElementById(
+                        "editActivityType"
+                    ).value;
+
+
+                const updatedDate =
+                    document.getElementById(
+                        "editActivityDate"
+                    ).value;
+
+
+                const updatedLocation =
+                    document.getElementById(
+                        "editActivityLocation"
+                    ).value.trim();
+
+
+                const updatedDescription =
+                    document.getElementById(
+                        "editActivityDescription"
+                    ).value.trim();
 
 
 
-                // Fill edit form
+                try {
 
-                document.getElementById(
-                    "editActivityName"
-                ).value =
-                    activity.activityName || "";
-
-
-                document.getElementById(
-                    "editActivityType"
-                ).value =
-                    activity.activityType || "Other";
+                    const activityRef =
+                        ref(
+                            db,
+                            "activities/" +
+                            currentActivityId
+                        );
 
 
-                document.getElementById(
-                    "editActivityDate"
-                ).value =
-                    activity.activityDate || "";
+                    await set(
+                        activityRef,
+                        {
+
+                            activityName:
+                                updatedName,
+
+                            activityType:
+                                updatedType,
+
+                            activityDate:
+                                updatedDate,
+
+                            location:
+                                updatedLocation,
+
+                            description:
+                                updatedDescription
+
+                        }
+                    );
 
 
-                document.getElementById(
-                    "editActivityLocation"
-                ).value =
-                    activity.location || "";
+                    alert(
+                        "Activity updated successfully!"
+                    );
 
 
-                document.getElementById(
-                    "editActivityDescription"
-                ).value =
-                    activity
+                    editActivityForm.reset();
+
+
+                    editActivitySection.classList.add(
+                        "hidden"
+                    );
+
+
+                    currentActivityId = null;
+
+
+                    loadActivities();
+
+
+                }
+
+                catch (error) {
+
+                    console.error(
+                        "Update activity error:",
+                        error
+                    );
+
+
+                    alert(
+                        "Failed to update activity: " +
+                        error.message
+                    );
+
+                }
+
+            }
+        );
+
+
+
+        // =========================================
+        // CANCEL EDIT
+        // =========================================
+
+        cancelEditBtn.addEventListener(
+            "click",
+            function() {
+
+                editActivityForm.reset();
+
+
+                editActivitySection.classList.add(
+                    "hidden"
+                );
+
+
+                currentActivityId = null;
+
+            }
+        );
+
+
+
+        // =========================================
+        // INITIAL LOAD
+        // =========================================
+
+        loadActivities();
+
+
+    </script>
+
+
+</body>
+
+</html>
