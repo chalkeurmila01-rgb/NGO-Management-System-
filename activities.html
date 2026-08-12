@@ -438,457 +438,266 @@
     src="auth.js">
 </script>
 
-
-
 <!-- Firebase Activities -->
 
 <script type="module">
 
+import {
+    ref,
+    push,
+    set,
+    get,
+    remove
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-database.js";
 
-    import {
-
-        ref,
-        push,
-        set,
-        get,
-        remove
-
-    } from
-    "https://www.gstatic.com/firebasejs/12.17.1/firebase-database.js";
+import { db } from "./firebase.js";
 
 
-    import {
+const activityForm = document.getElementById("activityForm");
+const activityList = document.getElementById("activityList");
+const activitySearch = document.getElementById("activitySearch");
+const activitySearchBtn = document.getElementById("activitySearchBtn");
 
-        db
+const editActivitySection =
+    document.getElementById("editActivitySection");
 
-    } from "./firebase.js";
+const editActivityForm =
+    document.getElementById("editActivityForm");
+
+const cancelEditBtn =
+    document.getElementById("cancelEditBtn");
+
+let currentActivityId = null;
 
 
+// =========================================
+// ADD ACTIVITY
+// =========================================
 
-    // =========================================
-    // ELEMENTS
-    // =========================================
+activityForm.addEventListener("submit", async function(event) {
 
-    const activityForm =
-        document.getElementById(
-            "activityForm"
+    event.preventDefault();
+
+    const activityName =
+        document.getElementById("activityName").value.trim();
+
+    const activityType =
+        document.getElementById("activityType").value;
+
+    const activityDate =
+        document.getElementById("activityDate").value;
+
+    const activityLocation =
+        document.getElementById("activityLocation").value.trim();
+
+    const activityDescription =
+        document.getElementById("activityDescription").value.trim();
+
+    try {
+
+        const newActivityRef =
+            push(ref(db, "activities"));
+
+        await set(newActivityRef, {
+
+            activityName: activityName,
+            activityType: activityType,
+            activityDate: activityDate,
+            location: activityLocation,
+            description: activityDescription
+
+        });
+
+        alert("Activity added successfully!");
+
+        activityForm.reset();
+
+        loadActivities("");
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Failed to add activity: " +
+            error.message
         );
 
+    }
 
-    const activityList =
-        document.getElementById(
-            "activityList"
-        );
+});
 
 
-    const activitySearch =
-        document.getElementById(
-            "activitySearch"
-        );
+// =========================================
+// LOAD ACTIVITIES
+// =========================================
 
+async function loadActivities(searchText = "") {
 
-    const activitySearchBtn =
-        document.getElementById(
-            "activitySearchBtn"
-        );
+    try {
 
+        const snapshot =
+            await get(ref(db, "activities"));
 
-    const editActivitySection =
-        document.getElementById(
-            "editActivitySection"
-        );
+        activityList.innerHTML = "";
 
+        if (!snapshot.exists()) {
 
-    const editActivityForm =
-        document.getElementById(
-            "editActivityForm"
-        );
+            activityList.innerHTML = `
+                <p class="text-gray-500">
+                    No activities found.
+                </p>
+            `;
 
-
-    const cancelEditBtn =
-        document.getElementById(
-            "cancelEditBtn"
-        );
-
-
-    let currentActivityId = null;
-
-
-
-    // =========================================
-    // ADD ACTIVITY
-    // =========================================
-
-    activityForm.addEventListener(
-        "submit",
-        async function(event) {
-
-            event.preventDefault();
-
-
-            const activityName =
-                document.getElementById(
-                    "activityName"
-                ).value.trim();
-
-
-            const activityType =
-                document.getElementById(
-                    "activityType"
-                ).value;
-
-
-            const activityDate =
-                document.getElementById(
-                    "activityDate"
-                ).value;
-
-
-            const activityLocation =
-                document.getElementById(
-                    "activityLocation"
-                ).value.trim();
-
-
-            const activityDescription =
-                document.getElementById(
-                    "activityDescription"
-                ).value.trim();
-
-
-
-            try {
-
-                const newActivityRef =
-                    push(
-                        ref(
-                            db,
-                            "activities"
-                        )
-                    );
-
-
-                await set(
-                    newActivityRef,
-                    {
-
-                        activityName:
-                            activityName,
-
-                        activityType:
-                            activityType,
-
-                        activityDate:
-                            activityDate,
-
-                        location:
-                            activityLocation,
-
-                        description:
-                            activityDescription
-
-                    }
-                );
-
-
-                alert(
-                    "Activity added successfully!"
-                );
-
-
-                activityForm.reset();
-
-
-                loadActivities();
-
-            }
-
-
-            catch (error) {
-
-                console.error(
-                    "Activity error:",
-                    error
-                );
-
-
-                alert(
-                    "Failed to add activity: " +
-                    error.message
-                );
-
-            }
-
+            return;
         }
-    );
 
+        const activities = snapshot.val();
 
+        const search =
+            searchText.trim().toLowerCase();
 
-    // =========================================
-    // LOAD ACTIVITIES
-    // =========================================
+        let found = false;
 
-    async function loadActivities(
-        searchText = ""
-    ) {
+        Object.keys(activities).forEach(function(id) {
 
-        try {
+            const activity = activities[id];
 
-            const snapshot =
-                await get(
-                    ref(
-                        db,
-                        "activities"
-                    )
-                );
+            const name =
+                (activity.activityName || "").toLowerCase();
 
+            const type =
+                (activity.activityType || "").toLowerCase();
 
-            activityList.innerHTML = "";
+            const date =
+                (activity.activityDate || "").toLowerCase();
 
+            const location =
+                (activity.location || "").toLowerCase();
 
-            if (!snapshot.exists()) {
+            const description =
+                (activity.description || "").toLowerCase();
 
-                activityList.innerHTML = `
-                    <p class="text-gray-500">
-                        No activities found.
-                    </p>
-                `;
+            const matches =
+                name.includes(search) ||
+                type.includes(search) ||
+                date.includes(search) ||
+                location.includes(search) ||
+                description.includes(search);
 
+            if (!matches) {
                 return;
-
             }
 
+            found = true;
 
-            const activities =
-                snapshot.val();
+            const div =
+                document.createElement("div");
 
+            div.className =
+                "border border-gray-300 rounded-lg p-5 mb-4";
 
-            let found = false;
+            div.innerHTML = `
 
+                <h4 class="text-xl font-bold text-blue-700">
+                    ${activity.activityName || ""}
+                </h4>
 
-            Object.keys(
-                activities
-            ).forEach(
-                function(id) {
+                <p class="mt-2">
+                    <strong>Type:</strong>
+                    ${activity.activityType || ""}
+                </p>
 
+                <p>
+                    <strong>Date:</strong>
+                    ${activity.activityDate || ""}
+                </p>
 
-                    const activity =
-                        activities[id];
+                <p>
+                    <strong>Location:</strong>
+                    ${activity.location || ""}
+                </p>
 
+                <p>
+                    <strong>Description:</strong>
+                    ${activity.description || ""}
+                </p>
 
-                    const search =
-                        searchText.toLowerCase();
+                <div class="mt-4">
 
+                    <button
+                        class="editActivityBtn bg-yellow-500 text-white px-4 py-2 rounded-lg"
+                        data-id="${id}">
+                        Edit Activity
+                    </button>
 
-                    const name =
-                        (
-                            activity.activityName || ""
-                        ).toLowerCase();
+                    <button
+                        class="deleteActivityBtn bg-red-600 text-white px-4 py-2 rounded-lg ml-2"
+                        data-id="${id}">
+                        Delete Activity
+                    </button>
 
+                </div>
+            `;
 
-                    const type =
-                        (
-                            activity.activityType || ""
-                        ).toLowerCase();
+            activityList.appendChild(div);
 
+        });
 
-                    const location =
-                        (
-                            activity.location || ""
-                        ).toLowerCase();
-
-
-                    const description =
-                        (
-                            activity.description || ""
-                        ).toLowerCase();
-
-
-                    const date =
-                        (
-                            activity.activityDate || ""
-                        ).toLowerCase();
-
-
-
-                    const matches =
-
-                        name.includes(search) ||
-
-                        type.includes(search) ||
-
-                        location.includes(search) ||
-
-                        description.includes(search) ||
-
-                        date.includes(search);
-
-
-
-                    if (!matches) {
-
-                        return;
-
-                    }
-
-
-                    found = true;
-
-
-
-                    const div =
-                        document.createElement(
-                            "div"
-                        );
-
-
-                    div.className =
-                        "border border-gray-300 rounded-lg p-5 mb-4";
-
-
-                    div.innerHTML = `
-
-                        <h4 class="text-xl font-bold text-blue-700">
-                            ${activity.activityName}
-                        </h4>
-
-
-                        <p class="mt-2">
-                            <strong>Type:</strong>
-                            ${activity.activityType}
-                        </p>
-
-
-                        <p>
-                            <strong>Date:</strong>
-                            ${activity.activityDate}
-                        </p>
-
-
-                        <p>
-                            <strong>Location:</strong>
-                            ${activity.location}
-                        </p>
-
-
-                        <p>
-                            <strong>Description:</strong>
-                            ${activity.description}
-                        </p>
-
-
-                        <button
-                            class="editActivityBtn bg-yellow-500 text-white px-4 py-2 rounded-lg mt-4"
-                            data-id="${id}">
-
-                            Edit Activity
-
-                        </button>
-
-                        <button
-    class="deleteActivityBtn bg-red-600 text-white px-4 py-2 rounded-lg mt-4 ml-2"
-    data-id="${id}">
-
-    Delete Activity
-
-</button>
-
-                    `;
-
-
-                    activityList.appendChild(
-                        div
-                    );
-
-                }
-            );
-
-
-
-            if (!found) {
-
-                activityList.innerHTML = `
-                    <p class="text-red-600">
-                        No matching activities found.
-                    </p>
-                `;
-
-            }
-
-
-        }
-
-        catch (error) {
-
-            console.error(
-                "Loading activities error:",
-                error
-            );
-
+        if (!found) {
 
             activityList.innerHTML = `
                 <p class="text-red-600">
-                    Error loading activities.
+                    No matching activities found.
                 </p>
             `;
 
         }
 
+    } catch (error) {
+
+        console.error(error);
+
+        activityList.innerHTML = `
+            <p class="text-red-600">
+                Error loading activities.
+            </p>
+        `;
+
     }
 
+}
 
 
-    // =========================================
-    // SEARCH BUTTON
-    // =========================================
+// =========================================
+// SEARCH
+// =========================================
 
-    activitySearchBtn.addEventListener(
-        "click",
-        function() {
+activitySearchBtn.addEventListener("click", function() {
 
-            const searchText =
-                activitySearch.value.trim();
-
-
-            loadActivities(
-                searchText
-            );
-
-        }
+    loadActivities(
+        activitySearch.value.trim()
     );
 
+});
+
+activitySearch.addEventListener("keydown", function(event) {
+
+    if (event.key === "Enter") {
+
+        event.preventDefault();
+
+        loadActivities(
+            activitySearch.value.trim()
+        );
+
+    }
+
+});
 
 
-    // =========================================
-    // SEARCH WITH ENTER
-    // =========================================
-
-    activitySearch.addEventListener(
-        "keydown",
-        function(event) {
-
-            if (
-                event.key === "Enter"
-            ) {
-
-                event.preventDefault();
-
-
-                const searchText =
-                    activitySearch.value.trim();
-
-
-                loadActivities(
-                    searchText
-                );
-
-            }
-
-        }
-    );
-
-       // =========================================
-// OPEN EDIT ACTIVITY FORM
+// =========================================
+// OPEN EDIT FORM
 // =========================================
 
 document.addEventListener("click", async function(event) {
@@ -897,186 +706,164 @@ document.addEventListener("click", async function(event) {
         return;
     }
 
-    currentActivityId = event.target.dataset.id;
+    const activityId =
+        event.target.dataset.id;
 
     try {
 
-        const activityRef = ref(
-            db,
-            "activities/" + currentActivityId
-        );
-
-        const snapshot = await get(activityRef);
+        const snapshot =
+            await get(
+                ref(db, "activities/" + activityId)
+            );
 
         if (!snapshot.exists()) {
 
             alert("Activity not found.");
+
             return;
         }
 
-        const activity = snapshot.val();
+        const activity =
+            snapshot.val();
 
-        // Fill Edit Form
+        currentActivityId = activityId;
 
         document.getElementById(
             "editActivityName"
-        ).value = activity.activityName || "";
+        ).value =
+            activity.activityName || "";
 
         document.getElementById(
             "editActivityType"
-        ).value = activity.activityType || "Other";
+        ).value =
+            activity.activityType || "Other";
 
         document.getElementById(
             "editActivityDate"
-        ).value = activity.activityDate || "";
+        ).value =
+            activity.activityDate || "";
 
         document.getElementById(
             "editActivityLocation"
-        ).value = activity.location || "";
+        ).value =
+            activity.location || "";
 
         document.getElementById(
             "editActivityDescription"
-        ).value = activity.description || "";
+        ).value =
+            activity.description || "";
 
-        // Show Edit Form
+        editActivitySection.classList.remove("hidden");
 
-        document.getElementById(
-            "editActivitySection"
-        ).classList.remove("hidden");
-
-        // Scroll to Edit Form
-
-        document.getElementById(
-            "editActivitySection"
-        ).scrollIntoView({
+        editActivitySection.scrollIntoView({
             behavior: "smooth"
         });
 
-    }
+    } catch (error) {
 
-    catch (error) {
-
-        console.error(
-            "Open edit error:",
-            error
-        );
+        console.error(error);
 
         alert(
             "Failed to open activity: " +
             error.message
         );
+
     }
 
 });
+
 
 // =========================================
 // UPDATE ACTIVITY
 // =========================================
 
-document.getElementById("editActivityForm")
-    .addEventListener("submit", async function(event) {
+editActivityForm.addEventListener("submit", async function(event) {
 
-        event.preventDefault();
+    event.preventDefault();
 
-        if (!currentActivityId) {
-            alert("No activity selected.");
-            return;
-        }
+    if (!currentActivityId) {
 
-        const updatedName =
-            document.getElementById("editActivityName").value.trim();
+        alert("No activity selected.");
 
-        const updatedType =
-            document.getElementById("editActivityType").value;
+        return;
+    }
 
-        const updatedDate =
-            document.getElementById("editActivityDate").value;
+    try {
 
-        const updatedLocation =
-            document.getElementById("editActivityLocation").value.trim();
-
-        const updatedDescription =
-            document.getElementById("editActivityDescription").value.trim();
-
-        try {
-
-            const activityRef = ref(
+        const activityRef =
+            ref(
                 db,
                 "activities/" + currentActivityId
             );
 
-            await set(activityRef, {
+        await set(activityRef, {
 
-                activityName: updatedName,
+            activityName:
+                document.getElementById(
+                    "editActivityName"
+                ).value.trim(),
 
-                activityType: updatedType,
+            activityType:
+                document.getElementById(
+                    "editActivityType"
+                ).value,
 
-                activityDate: updatedDate,
+            activityDate:
+                document.getElementById(
+                    "editActivityDate"
+                ).value,
 
-                location: updatedLocation,
+            location:
+                document.getElementById(
+                    "editActivityLocation"
+                ).value.trim(),
 
-                description: updatedDescription
+            description:
+                document.getElementById(
+                    "editActivityDescription"
+                ).value.trim()
 
-            });
+        });
 
-            alert("Activity updated successfully!");
+        alert("Activity updated successfully!");
 
-            // Clear form
+        editActivityForm.reset();
 
-            document.getElementById("editActivityForm").reset();
+        editActivitySection.classList.add("hidden");
 
-            // Hide edit form
+        currentActivityId = null;
 
-            document.getElementById(
-                "editActivitySection"
-            ).classList.add("hidden");
+        loadActivities("");
 
-            // Clear selected ID
+    } catch (error) {
 
-            currentActivityId = null;
+        console.error(error);
 
-            // Refresh records
+        alert(
+            "Failed to update activity: " +
+            error.message
+        );
 
-            loadActivities();
+    }
 
-        }
-
-        catch (error) {
-
-            console.error(
-                "Update activity error:",
-                error
-            );
-
-            alert(
-                "Failed to update activity: " +
-                error.message
-            );
-        }
-
-    });
+});
 
 
 // =========================================
 // CANCEL EDIT
 // =========================================
 
-document.getElementById("cancelEditBtn")
-    .addEventListener("click", function() {
+cancelEditBtn.addEventListener("click", function() {
 
-        document.getElementById(
-            "editActivityForm"
-        ).reset();
+    editActivityForm.reset();
 
-        document.getElementById(
-            "editActivitySection"
-        ).classList.add("hidden");
+    editActivitySection.classList.add("hidden");
 
-        currentActivityId = null;
+    currentActivityId = null;
 
-    });
+});
 
-       
+
 // =========================================
 // DELETE ACTIVITY
 // =========================================
@@ -1087,20 +874,23 @@ document.addEventListener("click", async function(event) {
         return;
     }
 
-    const activityId = event.target.dataset.id;
+    const activityId =
+        event.target.dataset.id;
 
-    if (!confirm("Are you sure you want to delete this activity?")) {
+    if (!confirm(
+        "Are you sure you want to delete this activity?"
+    )) {
         return;
     }
 
     try {
 
-        const activityRef = ref(
-            db,
-            "activities/" + activityId
+        await remove(
+            ref(
+                db,
+                "activities/" + activityId
+            )
         );
-
-        await remove(activityRef);
 
         alert("Activity deleted successfully!");
 
@@ -1124,9 +914,9 @@ document.addEventListener("click", async function(event) {
 // INITIAL LOAD
 // =========================================
 
-window.addEventListener("load", function() {
-    loadActivities("");
-});
+loadActivities("");
+
+</script>
 
     </script>
 
