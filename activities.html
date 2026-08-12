@@ -971,6 +971,113 @@ document.addEventListener("click", async function(event) {
 
 });
 
+// =========================================
+// UPDATE ACTIVITY
+// =========================================
+
+document.getElementById("editActivityForm")
+    .addEventListener("submit", async function(event) {
+
+        event.preventDefault();
+
+        if (!currentActivityId) {
+            alert("No activity selected.");
+            return;
+        }
+
+        const updatedName =
+            document.getElementById("editActivityName").value.trim();
+
+        const updatedType =
+            document.getElementById("editActivityType").value;
+
+        const updatedDate =
+            document.getElementById("editActivityDate").value;
+
+        const updatedLocation =
+            document.getElementById("editActivityLocation").value.trim();
+
+        const updatedDescription =
+            document.getElementById("editActivityDescription").value.trim();
+
+        try {
+
+            const activityRef = ref(
+                db,
+                "activities/" + currentActivityId
+            );
+
+            await set(activityRef, {
+
+                activityName: updatedName,
+
+                activityType: updatedType,
+
+                activityDate: updatedDate,
+
+                location: updatedLocation,
+
+                description: updatedDescription
+
+            });
+
+            alert("Activity updated successfully!");
+
+            // Clear form
+
+            document.getElementById("editActivityForm").reset();
+
+            // Hide edit form
+
+            document.getElementById(
+                "editActivitySection"
+            ).classList.add("hidden");
+
+            // Clear selected ID
+
+            currentActivityId = null;
+
+            // Refresh records
+
+            loadActivities();
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Update activity error:",
+                error
+            );
+
+            alert(
+                "Failed to update activity: " +
+                error.message
+            );
+        }
+
+    });
+
+
+// =========================================
+// CANCEL EDIT
+// =========================================
+
+document.getElementById("cancelEditBtn")
+    .addEventListener("click", function() {
+
+        document.getElementById(
+            "editActivityForm"
+        ).reset();
+
+        document.getElementById(
+            "editActivitySection"
+        ).classList.add("hidden");
+
+        currentActivityId = null;
+
+    });
+
        // =========================================
 // DELETE ACTIVITY
 // =========================================
