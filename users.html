@@ -15,7 +15,6 @@
 
 </head>
 
-
 <body class="bg-gray-50 text-gray-800">
 
 
@@ -52,18 +51,206 @@
 <main class="max-w-6xl mx-auto px-4 py-10">
 
 
-    <h2 class="text-3xl font-bold text-blue-700 mb-2">
+    <h2 class="text-3xl font-bold text-blue-700">
         User Management
     </h2>
 
-    <p class="text-gray-600 mb-8">
-        View and manage registered NGO users.
+    <p class="text-gray-600 mt-2 mb-8">
+        Add, view, search, edit and delete registered NGO users.
     </p>
 
 
 
     <!-- =========================================
-         SEARCH USERS
+         ADD USER
+    ========================================== -->
+
+    <section class="bg-white p-6 rounded-xl shadow-md mb-8">
+
+        <h3 class="text-2xl font-bold text-blue-700 mb-6">
+            Add User
+        </h3>
+
+
+        <form id="userForm">
+
+
+            <!-- Name -->
+
+            <div class="mb-4">
+
+                <label class="block font-medium mb-1">
+                    User Name
+                </label>
+
+                <input
+                    type="text"
+                    id="userName"
+                    placeholder="Enter user name"
+                    required
+                    class="w-full border border-gray-300 rounded-lg p-3">
+
+            </div>
+
+
+
+            <!-- Email -->
+
+            <div class="mb-4">
+
+                <label class="block font-medium mb-1">
+                    Email
+                </label>
+
+                <input
+                    type="email"
+                    id="userEmail"
+                    placeholder="Enter email"
+                    required
+                    class="w-full border border-gray-300 rounded-lg p-3">
+
+            </div>
+
+
+
+            <!-- Role -->
+
+            <div class="mb-6">
+
+                <label class="block font-medium mb-1">
+                    Role
+                </label>
+
+                <select
+                    id="userRole"
+                    class="w-full border border-gray-300 rounded-lg p-3">
+
+                    <option value="user">
+                        User
+                    </option>
+
+                    <option value="admin">
+                        Admin
+                    </option>
+
+                </select>
+
+            </div>
+
+
+
+            <button
+                type="submit"
+                class="bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold">
+
+                Add User
+
+            </button>
+
+        </form>
+
+    </section>
+
+
+
+    <!-- =========================================
+         EDIT USER
+    ========================================== -->
+
+    <section
+        id="editUserSection"
+        class="bg-white p-6 rounded-xl shadow-md mb-8 hidden">
+
+        <h3 class="text-2xl font-bold text-yellow-600 mb-6">
+            Edit User
+        </h3>
+
+
+        <form id="editUserForm">
+
+
+            <div class="mb-4">
+
+                <label class="block font-medium mb-1">
+                    User Name
+                </label>
+
+                <input
+                    type="text"
+                    id="editUserName"
+                    required
+                    class="w-full border border-gray-300 rounded-lg p-3">
+
+            </div>
+
+
+
+            <div class="mb-4">
+
+                <label class="block font-medium mb-1">
+                    Email
+                </label>
+
+                <input
+                    type="email"
+                    id="editUserEmail"
+                    required
+                    class="w-full border border-gray-300 rounded-lg p-3">
+
+            </div>
+
+
+
+            <div class="mb-6">
+
+                <label class="block font-medium mb-1">
+                    Role
+                </label>
+
+                <select
+                    id="editUserRole"
+                    class="w-full border border-gray-300 rounded-lg p-3">
+
+                    <option value="user">
+                        User
+                    </option>
+
+                    <option value="admin">
+                        Admin
+                    </option>
+
+                </select>
+
+            </div>
+
+
+
+            <button
+                type="submit"
+                class="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold">
+
+                Update User
+
+            </button>
+
+
+            <button
+                type="button"
+                id="cancelEditBtn"
+                class="bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold ml-2">
+
+                Cancel
+
+            </button>
+
+        </form>
+
+    </section>
+
+
+
+    <!-- =========================================
+         SEARCH
     ========================================== -->
 
     <section class="bg-white p-6 rounded-xl shadow-md mb-8">
@@ -72,13 +259,15 @@
             Search Users
         </h3>
 
+
         <div class="flex flex-col md:flex-row gap-3">
 
             <input
                 type="text"
                 id="userSearch"
-                placeholder="Search by name or email..."
+                placeholder="Search by name, email or role..."
                 class="flex-1 border border-gray-300 rounded-lg p-3">
+
 
             <button
                 id="userSearchBtn"
@@ -87,6 +276,7 @@
                 Search
 
             </button>
+
 
             <button
                 id="showAllBtn"
@@ -111,6 +301,7 @@
         <h3 class="text-2xl font-bold text-blue-700 mb-6">
             Registered Users
         </h3>
+
 
         <div id="userList">
 
@@ -168,6 +359,8 @@
 
 import {
     ref,
+    push,
+    set,
     get,
     remove
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-database.js";
@@ -177,6 +370,9 @@ import {
 } from "./firebase.js";
 
 
+
+const userForm =
+    document.getElementById("userForm");
 
 const userList =
     document.getElementById("userList");
@@ -190,13 +386,111 @@ const userSearchBtn =
 const showAllBtn =
     document.getElementById("showAllBtn");
 
+const editUserSection =
+    document.getElementById("editUserSection");
+
+const editUserForm =
+    document.getElementById("editUserForm");
+
+const cancelEditBtn =
+    document.getElementById("cancelEditBtn");
+
+
+let currentUserId = null;
+
+
+
+// =========================================
+// ADD USER
+// =========================================
+
+userForm.addEventListener(
+    "submit",
+    async function(event) {
+
+        event.preventDefault();
+
+
+        const name =
+            document.getElementById(
+                "userName"
+            ).value.trim();
+
+
+        const email =
+            document.getElementById(
+                "userEmail"
+            ).value.trim();
+
+
+        const role =
+            document.getElementById(
+                "userRole"
+            ).value;
+
+
+        try {
+
+            const newUserRef =
+                push(
+                    ref(db, "users")
+                );
+
+
+            await set(
+                newUserRef,
+                {
+
+                    name: name,
+
+                    email: email,
+
+                    role: role
+
+                }
+            );
+
+
+            alert(
+                "User added successfully!"
+            );
+
+
+            userForm.reset();
+
+
+            loadUsers("");
+
+        }
+
+
+        catch (error) {
+
+            console.error(
+                "Add user error:",
+                error
+            );
+
+
+            alert(
+                "Failed to add user: " +
+                error.message
+            );
+
+        }
+
+    }
+);
+
 
 
 // =========================================
 // LOAD USERS
 // =========================================
 
-async function loadUsers(searchText = "") {
+async function loadUsers(
+    searchText = ""
+) {
 
     try {
 
@@ -218,6 +512,7 @@ async function loadUsers(searchText = "") {
             `;
 
             return;
+
         }
 
 
@@ -228,75 +523,107 @@ async function loadUsers(searchText = "") {
         let found = false;
 
 
-        Object.keys(users).forEach(function(id) {
+        Object.keys(users).forEach(
+            function(id) {
 
-            const user =
-                users[id];
-
-
-            const name =
-                (user.name || "").toLowerCase();
-
-            const email =
-                (user.email || "").toLowerCase();
+                const user =
+                    users[id];
 
 
-            const search =
-                searchText.toLowerCase();
+                const name =
+                    (
+                        user.name || ""
+                    ).toLowerCase();
 
 
-            if (
-                search &&
-                !name.includes(search) &&
-                !email.includes(search)
-            ) {
+                const email =
+                    (
+                        user.email || ""
+                    ).toLowerCase();
 
-                return;
+
+                const role =
+                    (
+                        user.role || ""
+                    ).toLowerCase();
+
+
+                const search =
+                    searchText.toLowerCase();
+
+
+                if (
+                    search &&
+                    !name.includes(search) &&
+                    !email.includes(search) &&
+                    !role.includes(search)
+                ) {
+
+                    return;
+
+                }
+
+
+                found = true;
+
+
+                const div =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                div.className =
+                    "border border-gray-300 rounded-lg p-5 mb-4";
+
+
+                div.innerHTML = `
+
+                    <h4 class="text-xl font-bold text-blue-700">
+                        ${user.name || "No Name"}
+                    </h4>
+
+                    <p class="mt-2">
+                        <strong>Email:</strong>
+                        ${user.email || "No Email"}
+                    </p>
+
+                    <p>
+                        <strong>Role:</strong>
+                        ${user.role || "user"}
+                    </p>
+
+                    <p class="text-sm text-gray-500 mt-1">
+                        User ID: ${id}
+                    </p>
+
+
+                    <button
+                        class="editUserBtn bg-yellow-500 text-white px-4 py-2 rounded-lg mt-4"
+                        data-id="${id}">
+
+                        Edit User
+
+                    </button>
+
+
+                    <button
+                        class="deleteUserBtn bg-red-600 text-white px-4 py-2 rounded-lg mt-4 ml-2"
+                        data-id="${id}">
+
+                        Delete User
+
+                    </button>
+
+                `;
+
+
+                userList.appendChild(
+                    div
+                );
 
             }
-
-
-            found = true;
-
-
-            const div =
-                document.createElement("div");
-
-
-            div.className =
-                "border border-gray-300 rounded-lg p-5 mb-4";
-
-
-            div.innerHTML = `
-
-                <h4 class="text-xl font-bold text-blue-700">
-                    ${user.name || "No Name"}
-                </h4>
-
-                <p class="mt-2">
-                    <strong>Email:</strong>
-                    ${user.email || "No Email"}
-                </p>
-
-                <p>
-                    <strong>User ID:</strong>
-                    ${id}
-                </p>
-
-                <button
-                    class="deleteUserBtn bg-red-600 text-white px-4 py-2 rounded-lg mt-4"
-                    data-id="${id}">
-
-                    Delete User
-
-                </button>
-
-            `;
-
-
-            userList.appendChild(div);
-
-        });
+        );
 
 
         if (!found) {
@@ -309,8 +636,10 @@ async function loadUsers(searchText = "") {
 
         }
 
+    }
 
-    } catch (error) {
+
+    catch (error) {
 
         console.error(
             "Load users error:",
@@ -349,14 +678,16 @@ userSearchBtn.addEventListener(
 
 
 // =========================================
-// ENTER SEARCH
+// ENTER KEY SEARCH
 // =========================================
 
 userSearch.addEventListener(
     "keydown",
     function(event) {
 
-        if (event.key === "Enter") {
+        if (
+            event.key === "Enter"
+        ) {
 
             event.preventDefault();
 
@@ -382,6 +713,239 @@ showAllBtn.addEventListener(
         userSearch.value = "";
 
         loadUsers("");
+
+    }
+);
+
+
+
+// =========================================
+// OPEN EDIT FORM
+// =========================================
+
+document.addEventListener(
+    "click",
+    async function(event) {
+
+        if (
+            !event.target.classList.contains(
+                "editUserBtn"
+            )
+        ) {
+
+            return;
+
+        }
+
+
+        currentUserId =
+            event.target.dataset.id;
+
+
+        try {
+
+            const userRef =
+                ref(
+                    db,
+                    "users/" +
+                    currentUserId
+                );
+
+
+            const snapshot =
+                await get(userRef);
+
+
+            if (!snapshot.exists()) {
+
+                alert(
+                    "User not found."
+                );
+
+                return;
+
+            }
+
+
+            const user =
+                snapshot.val();
+
+
+            document.getElementById(
+                "editUserName"
+            ).value =
+                user.name || "";
+
+
+            document.getElementById(
+                "editUserEmail"
+            ).value =
+                user.email || "";
+
+
+            document.getElementById(
+                "editUserRole"
+            ).value =
+                user.role || "user";
+
+
+            editUserSection.classList.remove(
+                "hidden"
+            );
+
+
+            editUserSection.scrollIntoView({
+                behavior: "smooth"
+            });
+
+        }
+
+
+        catch (error) {
+
+            console.error(
+                "Open edit error:",
+                error
+            );
+
+
+            alert(
+                "Failed to open user: " +
+                error.message
+            );
+
+        }
+
+    }
+);
+
+
+
+// =========================================
+// UPDATE USER
+// =========================================
+
+editUserForm.addEventListener(
+    "submit",
+    async function(event) {
+
+        event.preventDefault();
+
+
+        if (!currentUserId) {
+
+            alert(
+                "No user selected."
+            );
+
+            return;
+
+        }
+
+
+        const updatedName =
+            document.getElementById(
+                "editUserName"
+            ).value.trim();
+
+
+        const updatedEmail =
+            document.getElementById(
+                "editUserEmail"
+            ).value.trim();
+
+
+        const updatedRole =
+            document.getElementById(
+                "editUserRole"
+            ).value;
+
+
+        try {
+
+            const userRef =
+                ref(
+                    db,
+                    "users/" +
+                    currentUserId
+                );
+
+
+            await set(
+                userRef,
+                {
+
+                    name:
+                        updatedName,
+
+                    email:
+                        updatedEmail,
+
+                    role:
+                        updatedRole
+
+                }
+            );
+
+
+            alert(
+                "User updated successfully!"
+            );
+
+
+            editUserForm.reset();
+
+
+            editUserSection.classList.add(
+                "hidden"
+            );
+
+
+            currentUserId = null;
+
+
+            loadUsers(
+                userSearch.value.trim()
+            );
+
+        }
+
+
+        catch (error) {
+
+            console.error(
+                "Update user error:",
+                error
+            );
+
+
+            alert(
+                "Failed to update user: " +
+                error.message
+            );
+
+        }
+
+    }
+);
+
+
+
+// =========================================
+// CANCEL EDIT
+// =========================================
+
+cancelEditBtn.addEventListener(
+    "click",
+    function() {
+
+        editUserForm.reset();
+
+        editUserSection.classList.add(
+            "hidden"
+        );
+
+        currentUserId = null;
 
     }
 );
@@ -429,7 +993,8 @@ document.addEventListener(
             await remove(
                 ref(
                     db,
-                    "users/" + userId
+                    "users/" +
+                    userId
                 )
             );
 
@@ -443,8 +1008,10 @@ document.addEventListener(
                 userSearch.value.trim()
             );
 
+        }
 
-        } catch (error) {
+
+        catch (error) {
 
             console.error(
                 "Delete user error:",
