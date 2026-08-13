@@ -197,6 +197,120 @@
     </footer>
 
     <script type="module" src="auth.js"></script>
+
+
+<!-- Firebase Dashboard Statistics -->
+
+<script type="module">
+
+import {
+    ref,
+    get
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-database.js";
+
+import {
+    db
+} from "./firebase.js";
+
+
+// =========================================
+// LOAD DASHBOARD COUNTS
+// =========================================
+
+async function loadDashboardCounts() {
+
+    try {
+
+        // Volunteers
+
+        const volunteersSnapshot =
+            await get(
+                ref(db, "volunteers")
+            );
+
+        document.getElementById(
+            "volunteerCount"
+        ).textContent =
+            volunteersSnapshot.exists()
+                ? Object.keys(
+                    volunteersSnapshot.val()
+                ).length
+                : 0;
+
+
+
+        // Donations
+
+        const donationsSnapshot =
+            await get(
+                ref(db, "donations")
+            );
+
+        document.getElementById(
+            "donationCount"
+        ).textContent =
+            donationsSnapshot.exists()
+                ? Object.keys(
+                    donationsSnapshot.val()
+                ).length
+                : 0;
+
+
+
+        // Beneficiaries
+
+        const beneficiariesSnapshot =
+            await get(
+                ref(db, "beneficiaries")
+            );
+
+        document.getElementById(
+            "beneficiaryCount"
+        ).textContent =
+            beneficiariesSnapshot.exists()
+                ? Object.keys(
+                    beneficiariesSnapshot.val()
+                ).length
+                : 0;
+
+
+
+        // Activities
+
+        const activitiesSnapshot =
+            await get(
+                ref(db, "activities")
+            );
+
+        document.getElementById(
+            "activityCount"
+        ).textContent =
+            activitiesSnapshot.exists()
+                ? Object.keys(
+                    activitiesSnapshot.val()
+                ).length
+                : 0;
+
+
+    } catch (error) {
+
+        console.error(
+            "Dashboard count error:",
+            error
+        );
+
+    }
+
+}
+
+
+// =========================================
+// START
+// =========================================
+
+loadDashboardCounts();
+
+</script>
     
 </body>
 </html>
