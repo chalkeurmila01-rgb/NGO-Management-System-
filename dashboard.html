@@ -310,6 +310,57 @@ async function loadDashboardCounts() {
 
 loadDashboardCounts();
 
+// =========================================
+// LOAD LOGGED-IN USER NAME
+// =========================================
+
+import {
+    onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
+import {
+    auth
+} from "./firebase.js";
+
+
+onAuthStateChanged(auth, async (user) => {
+
+    if (!user) {
+        return;
+    }
+
+    try {
+
+        const userRef =
+            ref(db, "users/" + user.uid);
+
+        const snapshot =
+            await get(userRef);
+
+        if (snapshot.exists()) {
+
+            const userData =
+                snapshot.val();
+
+            document.getElementById(
+                "userName"
+            ).textContent =
+                "Welcome, " +
+                (userData.name || "User");
+        }
+
+    } catch (error) {
+
+        console.error(
+            "Error loading user name:",
+            error
+        );
+
+    }
+
+});
+
+
 </script>
     
 </body>
