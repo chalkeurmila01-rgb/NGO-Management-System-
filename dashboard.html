@@ -430,6 +430,35 @@ onAuthStateChanged(auth, async (user) => {
     </div>
 
 </div>
+
+<script>
+    const chatbotBtn =
+        document.getElementById("chatbotBtn");
+
+    const chatbotWindow =
+        document.getElementById("chatbotWindow");
+
+    const closeChatbot =
+        document.getElementById("closeChatbot");
+
+
+    chatbotBtn.addEventListener("click", function () {
+
+        chatbotWindow.classList.remove("hidden");
+
+        chatbotBtn.classList.add("hidden");
+
+    });
+
+
+    closeChatbot.addEventListener("click", function () {
+
+        chatbotWindow.classList.add("hidden");
+
+        chatbotBtn.classList.remove("hidden");
+
+    });
+</script>
     
 </body>
 </html>
