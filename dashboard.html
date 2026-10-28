@@ -431,54 +431,25 @@ onAuthStateChanged(auth, async (user) => {
 
 </div>
 
+
 <script>
-    const chatbotBtn =
-        document.getElementById("chatbotBtn");
-
-    const chatbotWindow =
-        document.getElementById("chatbotWindow");
-
-    const closeChatbot =
-        document.getElementById("closeChatbot");
-
-
-    chatbotBtn.addEventListener("click", function () {
-
-        chatbotWindow.classList.remove("hidden");
-
-        chatbotBtn.classList.add("hidden");
-
-    });
-
-
-    closeChatbot.addEventListener("click", function () {
-
-        chatbotWindow.classList.add("hidden");
-
-        chatbotBtn.classList.remove("hidden");
-
-    });
-    
+const chatbotBtn = document.getElementById("chatbotBtn");
+const chatbotWindow = document.getElementById("chatbotWindow");
+const closeChatbot = document.getElementById("closeChatbot");
 const sendChatBtn = document.getElementById("sendChatBtn");
 const chatInput = document.getElementById("chatInput");
 const chatMessages = document.getElementById("chatMessages");
 
-sendChatBtn.addEventListener("click", function () {
-    const message = chatInput.value.trim();
+chatbotBtn.addEventListener("click", function () {
+    chatbotWindow.classList.remove("hidden");
+    chatbotBtn.classList.add("hidden");
+});
 
-    if (message === "") return;
+closeChatbot.addEventListener("click", function () {
+    chatbotWindow.classList.add("hidden");
+    chatbotBtn.classList.remove("hidden");
+});
 
-    const userMessage = document.createElement("div");
-    userMessage.className = "bg-blue-100 p-3 rounded-lg ml-6";
-    userMessage.textContent = message;
-
-    chatMessages.appendChild(userMessage);
-    chatInput.value = "";
-
-    const botMessage = document.createElement("div");
-    botMessage.className = "bg-gray-100 p-3 rounded-lg";
-    botMessage.textContent =
-        
 sendChatBtn.addEventListener("click", async function () {
     const message = chatInput.value.trim();
 
@@ -496,6 +467,8 @@ sendChatBtn.addEventListener("click", async function () {
     botMessage.textContent = "Thinking...";
     chatMessages.appendChild(botMessage);
     chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    sendChatBtn.disabled = true;
 
     try {
         const response = await fetch(
@@ -515,19 +488,17 @@ sendChatBtn.addEventListener("click", async function () {
             throw new Error(data.reply || "Request failed");
         }
 
-        botMessage.textContent = data.reply || "No response received.";
+        botMessage.textContent =
+            data.reply || "AI returned an empty response.";
+
     } catch (error) {
         console.error("Chatbot error:", error);
         botMessage.textContent =
-            "Sorry, I couldn't connect to the AI. Please try again.";
+            "AI connection failed. Please try again.";
+    } finally {
+        sendChatBtn.disabled = false;
+        chatMessages.scrollTop = chatMessages.scrollHeight;
     }
-
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-});
-
-
-    chatMessages.appendChild(botMessage);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
 });
 
 chatInput.addEventListener("keydown", function (event) {
@@ -535,8 +506,10 @@ chatInput.addEventListener("keydown", function (event) {
         sendChatBtn.click();
     }
 });
-
 </script>
+
+
+
     
 </body>
 </html>
